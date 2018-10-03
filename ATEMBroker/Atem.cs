@@ -11,25 +11,58 @@ namespace SixteenMedia.ATEM.Broker
 {
     class Atem
     {
+        #region private fields
+        /// <summary>
+        /// Holds the switcher enumerator object
+        /// </summary>
         private IBMDSwitcherDiscovery m_switcherDiscovery;
+
+        /// <summary>
+        /// Holds the switcher object
+        /// </summary>
         private IBMDSwitcher m_switcher;
-        private IBMDSwitcherMixEffectBlock m_mixEffectBlock1;
-        private IBMDSwitcherMixEffectBlock m_mixEffectBlock2;
-        private IBMDSwitcherInputSuperSource m_superSource;
 
+        /// <summary>
+        /// An array containing the ME Block objects
+        /// </summary>
+        private IBMDSwitcherMixEffectBlock[] m_mixEffectBlocks;
+
+        /// <summary>
+        /// Object which handles event handling/monitoring of the Switcher
+        /// </summary>
         private SwitcherMonitor m_switcherMonitor;
+
+        /// <summary>
+        /// Object which handles event handling/monitoring of the Mix Effects block
+        /// </summary>
         private MixEffectBlockMonitor m_mixEffectBlockMonitor;
+        #endregion
 
-        private List<AtemInput> inputs;
-        private List<KeyValuePair<string, IBMDSwitcherKey>> keys;
-        private List<SuperSourceBox> supersourceBoxes;
+        #region Events
+        /// <summary>
+        /// Called when the PGM bus input changes successfully
+        /// </summary>
 
+        public event EventHandler PGMInputChanged;
+        /// <summary>
+        /// Called when the PVW bus input changes successfully
+        /// </summary>
+        public event EventHandler PVWInputChanged;
+
+        /// <summary>
+        /// Called when the Atem is connected successfully
+        /// </summary>
+        public event EventHandler Connected;
+
+        /// <summary>
+        /// Called when the Atem is disconnected successfully
+        /// </summary>
+        public event EventHandler Disconnected;
+        #endregion
+
+        #region Constructors
         public Atem()
         {
-            inputs = new List<AtemInput>();
-            keys = new List<KeyValuePair<string, IBMDSwitcherKey>>();
-            supersourceBoxes = new List<SuperSourceBox>();
-
             m_switcherMonitor = new SwitcherMonitor();
             // note: this invoke pattern ensures our callback is called in the main thread. We are making double
             // use of lambda expressions here to achieve this.
@@ -50,31 +83,9 @@ namespace SixteenMedia.ATEM.Broker
 
             SwitcherDisconnected();		// start with switcher disconnected
         }
+        #endregion
 
-        internal List<KeyValuePair<string, long>> GetSourcesKeyValuePairs()
-        {
-            List<KeyValuePair<string, long>> sources = new List<KeyValuePair<string, long>>();
-            foreach (var item in this.inputs)
-            {
-                long inputid;
-                item.BMDInput.GetInputId(out inputid);
-                KeyValuePair<string, long> pair = new KeyValuePair<string, long>(item.AtemName, inputid);
-                sources.Add(pair);
-            }
-            return sources;
-        }
-
-        public event EventHandler PGMInputChanged;
-        public event EventHandler PVWInputChanged;
-
-        internal void SetSuperSourceSource(long inputId)
-        {
-            this.supersourceBoxes[3].BMDSuperSourceBox.SetInputSource(inputId);
-        }
-
-        public event EventHandler Connected;
-        public event EventHandler Disconnected;
-
+        #region Event creation methods
         protected void OnProgramInputChanged()
         {
             if (this.PGMInputChanged != null)
@@ -90,7 +101,9 @@ namespace SixteenMedia.ATEM.Broker
                 PVWInputChanged(this, new EventArgs());
             }
         }
+        #endregion
 
+        #region Switcher connect/disconnect and supporting methods
         private void SwitcherDisconnected()
         {
             if (m_switcher != null)
@@ -102,28 +115,101 @@ namespace SixteenMedia.ATEM.Broker
                 m_switcher = null;
             }
 
-            if (m_mixEffectBlock1 != null)
-            {
-                // Remove callback
-                m_mixEffectBlock1.RemoveCallback(m_mixEffectBlockMonitor);
-
-                // Release reference
-                m_mixEffectBlock1 = null;
-            }
-            if (m_mixEffectBlock2 != null)
-            {
-                // Remove callback
-                m_mixEffectBlock2.RemoveCallback(m_mixEffectBlockMonitor);
-
-                // Release reference
-                m_mixEffectBlock2 = null;
-            }
+            nullifyMixEffectsBlocks();
             if (this.Disconnected != null)
             {
                 Disconnected(this, new EventArgs());
             }
         }
 
+        private void nullifyMixEffectsBlocks()
+        {
+            if (m_mixEffectBlocks != null)
+            {
+                for (int i = 0; i < m_mixEffectBlocks.Length; i++)
+                {
+                    if (m_mixEffectBlocks[i] != null)
+                    {
+                        // Remove callback
+                        m_mixEffectBlocks[i].RemoveCallback(m_mixEffectBlockMonitor);
+
+                        // Release reference
+                        m_mixEffectBlocks[i] = null;
+                    }
+                }
+
+                m_mixEffectBlocks = null;
+            }
+        }
+
+        private void getMEBlocks()
+        {
+            // ensure m_mixEffectBlocks is empty
+            nullifyMixEffectsBlocks();
+
+            // Create an iterator
+            IBMDSwitcherMixEffectBlockIterator meIterator = null;
+
+            // init the mix effects count, this is a zero-based count so we start at -1
+            int meCount = -1;
+
+            // Holds the pointer to the mix effects iterator object
+            IntPtr meIteratorPtr;
+
+            // The COM class GUID of the iterator
+            Guid meIteratorIID = typeof(IBMDSwitcherMixEffectBlockIterator).GUID;
+
+            // Now create the iterator
+            m_switcher.CreateIterator(ref meIteratorIID, out meIteratorPtr);
+
+            // if we're not null then do the conversion to a .net class
+            if (meIteratorPtr != null)
+            {
+                meIterator = (IBMDSwitcherMixEffectBlockIterator)Marshal.GetObjectForIUnknown(meIteratorPtr);
+            }
+
+            // bail if that returned null
+            if (meIterator == null)
+                return;
+
+            // now we can start to iterate over the ME blocks this ATEM has. Usually the basic ATEM's have only one Mix Effect Block.  The 2M/E ATEM's have two.  Some have more.
+            IBMDSwitcherMixEffectBlock meBlock = null;
+
+            // try and get the Mix Effect Block from the iterator
+            meIterator.Next(out meBlock);
+
+            // if that wasn't null then add to our array of ME Blocks
+            while (meBlock != null)
+            {
+                // We're not null, we increment our Mix Effect count!
+                meCount++;
+
+                // Add event handling to the newly found ME Block
+                meBlock.AddCallback(m_mixEffectBlockMonitor);
+
+                // is this the first ME Block?
+                if (meCount == 0)
+                {
+                    // Yes, so we init our ME Block array with just one item
+                    m_mixEffectBlocks = new IBMDSwitcherMixEffectBlock[1];
+                    m_mixEffectBlocks[0] = meBlock;
+                }
+                else // otherwise we re-create our ME Block array and increase size by one!
+                {
+                    IBMDSwitcherMixEffectBlock[] oldMEArray = m_mixEffectBlocks;
+                    m_mixEffectBlocks = new IBMDSwitcherMixEffectBlock[meCount];
+                    for (int i = 0; i < meCount; i++)
+                    {
+                        m_mixEffectBlocks[i] = oldMEArray[i];
+                    }
+                    m_mixEffectBlocks[meCount] = meBlock;
+                }
+
+                // Try and get the next block.  A ref of null means there are no more Mix Effects Blocks on this ATEM
+                meIterator.Next(out meBlock);
+            }
+        }
+        
         private void SwitcherConnected()
         {
             // TODO: Make this an event
@@ -138,192 +224,10 @@ namespace SixteenMedia.ATEM.Broker
             // mix effects blocks
             getMEBlocks();
 
-            // keyers
-            getKeyers();
-
-            // inputs
-            getInputs();
-
-            // super source
-            getSupersourceBoxes();
-
-            InitATEM();
-
             if (this.Connected != null)
             {
                 Connected(this, new EventArgs());
             }
-        }
-
-        private void getMEBlocks()
-        {
-            // We want to get the first Mix Effect block (ME 1). We create a ME iterator,
-            // and then get the first one:
-            m_mixEffectBlock1 = null;
-            m_mixEffectBlock2 = null;
-
-            IBMDSwitcherMixEffectBlockIterator meIterator = null;
-            IntPtr meIteratorPtr;
-            Guid meIteratorIID = typeof(IBMDSwitcherMixEffectBlockIterator).GUID;
-            m_switcher.CreateIterator(ref meIteratorIID, out meIteratorPtr);
-            if (meIteratorPtr != null)
-            {
-                meIterator = (IBMDSwitcherMixEffectBlockIterator)Marshal.GetObjectForIUnknown(meIteratorPtr);
-            }
-
-            if (meIterator == null)
-                return;
-
-            if (meIterator != null)
-            {
-                meIterator.Next(out m_mixEffectBlock1);
-                meIterator.Next(out m_mixEffectBlock2);
-            }
-
-            if (m_mixEffectBlock1 == null)
-            {
-                //MessageBox.Show("Unexpected: Could not get first mix effect block", "Error");
-                return;
-            }
-
-            if (m_mixEffectBlock2 == null)
-            {
-                //MessageBox.Show("Unexpected: Could not get first mix effect block", "Error");
-                return;
-            }
-
-            // Install MixEffectBlockMonitor callbacks:
-            m_mixEffectBlock1.AddCallback(m_mixEffectBlockMonitor);
-            m_mixEffectBlock2.AddCallback(m_mixEffectBlockMonitor);
-        }
-
-        private void getInputs()
-        {
-            bool iterating;
-            IntPtr inputsPtr;
-            Guid inputsGuid = typeof(IBMDSwitcherInputIterator).GUID;
-            m_switcher.CreateIterator(ref inputsGuid, out inputsPtr);
-
-            IBMDSwitcherInputIterator inputsIterator = (IBMDSwitcherInputIterator)Marshal.GetObjectForIUnknown(inputsPtr);
-
-            iterating = true;
-            while (iterating)
-            {
-                IBMDSwitcherInput input;
-                inputsIterator.Next(out input);
-                if (input != null)
-                {
-                    string name;
-                    input.GetString(_BMDSwitcherInputPropertyId.bmdSwitcherInputPropertyIdLongName, out name);
-                    inputs.Add(new AtemInput(name, ref input));
-                    //inputs.Add(new AtemInput(SwitcherMappings.NameMappings.First(i => i.Key == name).Value, ref input));
-                }
-                else
-                {
-                    iterating = false;
-                }
-            }
-
-            //// supersource
-            //IBMDSwitcherInput ssInput;
-            //long ssInt = 6000;
-            //inputsIterator.GetById(ssInt, out ssInput);
-
-            //IntPtr ssPtr;
-            //GCHandle inputHandle = GCHandle.Alloc(ssInput);
-            //IntPtr inputPtr = (IntPtr)inputHandle;
-            //Guid ssGuid = typeof(IBMDSwitcherInputSuperSource).GUID;
-            //int hresult = Marshal.QueryInterface(inputPtr, ref ssGuid, out ssPtr);
-            //if (ssPtr != IntPtr.Zero)
-            //{
-            //    Console.Write("SUCCESS");
-            //}
-        }
-
-        private void getKeyers()
-        {
-            bool iterating;
-            int keyerNum;
-            IntPtr keyersPtr;
-            Guid keyerGuid = typeof(IBMDSwitcherKeyIterator).GUID;
-            m_mixEffectBlock1.CreateIterator(ref keyerGuid, out keyersPtr);
-
-            IBMDSwitcherKeyIterator keyersIterator = (IBMDSwitcherKeyIterator)Marshal.GetObjectForIUnknown(keyersPtr);
-            iterating = true;
-            keyerNum = 1;
-            while (iterating)
-            {
-                IBMDSwitcherKey keyer;
-                keyersIterator.Next(out keyer);
-                if (keyer != null)
-                {
-                    keys.Add(new KeyValuePair<string, IBMDSwitcherKey>(string.Format("ME1KEY{0}", keyerNum), keyer));
-                }
-                else
-                {
-                    iterating = false;
-                }
-                keyerNum++;
-            }
-
-            keyersIterator = null;
-            keyersPtr = IntPtr.Zero;
-
-            m_mixEffectBlock2.CreateIterator(ref keyerGuid, out keyersPtr);
-
-            keyersIterator = (IBMDSwitcherKeyIterator)Marshal.GetObjectForIUnknown(keyersPtr);
-            iterating = true;
-            keyerNum = 1;
-            while (iterating)
-            {
-                IBMDSwitcherKey keyer;
-                keyersIterator.Next(out keyer);
-                if (keyer != null)
-                {
-                    keys.Add(new KeyValuePair<string, IBMDSwitcherKey>(string.Format("ME2KEY{0}", keyerNum), keyer));
-                }
-                else
-                {
-                    iterating = false;
-                }
-                keyerNum++;
-            }
-        }
-
-        private void getSupersourceBoxes()
-        {
-
-            //Guid ssGuid = typeof(IBMDSwitcherInputSuperSource).GUID;
-
-
-
-
-
-            //IBMDSwitcherInputSuperSource supersource = (IBMDSwitcherInputSuperSource)Marshal.GetObjectForIUnknown(ssPtr);
-            IntPtr ssPtr;
-            Guid ssGuid = typeof(IBMDSwitcherSuperSourceBoxIterator).GUID;
-            m_switcher.CreateIterator(ref ssGuid, out ssPtr);
-            IBMDSwitcherSuperSourceBoxIterator ssIterator = (IBMDSwitcherSuperSourceBoxIterator)Marshal.GetObjectForIUnknown(ssPtr);
-            bool iterating = true;
-            int boxNum = 1;
-            while (iterating)
-            {
-                IBMDSwitcherSuperSourceBox ss;
-                ssIterator.Next(out ss);
-                if (ss != null)
-                {
-                    supersourceBoxes.Add(new SuperSourceBox(ref ss));
-                }
-                else
-                {
-                    iterating = false;
-                }
-                boxNum++;
-            }
-
-            ssIterator = null;
-            ssPtr = IntPtr.Zero;
-
         }
 
         public void Connect(string address)
@@ -357,216 +261,37 @@ namespace SixteenMedia.ATEM.Broker
 
             SwitcherConnected();
         }
+        #endregion
 
-        public void InitATEM()
-        {
-            // ME2
-            m_mixEffectBlock2.SetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, inputs.First(i => i.InputName == InputNames.Caspar1).AtemId);
-            m_mixEffectBlock2.SetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdPreviewInput, inputs.First(i => i.InputName == InputNames.Caspar2).AtemId);
-            keys.First(k => k.Key == "ME2KEY1").Value.SetOnAir(1);
-            keys.First(k => k.Key == "ME2KEY2").Value.SetOnAir(0);
-
-            // ME1
-            keys.First(k => k.Key == "ME1KEY1").Value.SetOnAir(0);
-            keys.First(k => k.Key == "ME1KEY2").Value.SetOnAir(0);
-            m_mixEffectBlock1.SetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, inputs.First(i => i.InputName == InputNames.Caspar4).AtemId);
-            m_mixEffectBlock1.SetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, inputs.First(i => i.InputName == InputNames.ME2PGM).AtemId);
-        }
-
+        /// <summary>
+        /// Sets the input for the PGM bus on the ATEM
+        /// </summary>
+        /// <param name="inputId"></param>
         public void SetPGM(long inputId)
         {
-            if (m_mixEffectBlock1 != null)
+            if (m_mixEffectBlocks != null)
             {
-                m_mixEffectBlock1.SetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput,
-                    inputId);
+                for (int i = 0; i < m_mixEffectBlocks.Length; i++)
+                {
+                    m_mixEffectBlocks[i].SetProgramInput(inputId);
+                }
             }
         }
 
+        /// <summary>
+        /// Sets the input for PVW bus on the ATEM
+        /// </summary>
+        /// <param name="inputId"></param>
         public void SetPVW(long inputId)
         {
-            if (m_mixEffectBlock1 != null)
+            if (m_mixEffectBlocks != null)
             {
-                m_mixEffectBlock1.SetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdPreviewInput,
-                    inputId);
-            }
-        }
-
-        public void CUT()
-        {
-            if (m_mixEffectBlock1 != null)
-            {
-                m_mixEffectBlock1.PerformCut();
-            }
-        }
-
-        public void AUTO()
-        {
-            if (m_mixEffectBlock1 != null)
-            {
-                m_mixEffectBlock1.PerformAutoTransition();
-            }
-        }
-
-        public void Switch_Cam1()
-        {
-            m_mixEffectBlock2.PerformCut();
-        }
-
-        public void Switch_Cam2()
-        {
-            m_mixEffectBlock2.PerformCut();
-        }
-
-        public void Switch_Cam3()
-        {
-
-        }
-
-        public void Switch_Cam4()
-        {
-
-        }
-
-        public void Switch_VT()
-        {
-            m_mixEffectBlock1.SetString(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, inputs.First(i => i.InputName == InputNames.Caspar4).AtemName);
-        }
-
-        public void Switch_FF()
-        {
-            m_mixEffectBlock1.SetString(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, inputs.First(i => i.InputName == InputNames.Caspar3).AtemName);
-        }
-
-        public void Switch_SS()
-        {
-            m_mixEffectBlock1.SetString(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, inputs.First(i => i.InputName == InputNames.SUPERSOURCE).AtemName);
-        }
-
-    }
-
-    class MEState
-    {
-        public IBMDSwitcherMixEffectBlock MixEffectsBlock { get; set; }
-        public long PVW { get; set; }
-        public long PGM { get; set; }
-
-        public MEState(ref IBMDSwitcherMixEffectBlock meBlock1)
-        {
-            this.MixEffectsBlock = meBlock1;
-
-            long pvw;
-            this.MixEffectsBlock.GetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdPreviewInput, out pvw);
-            this.PVW = pvw;
-
-            long pgm;
-            this.MixEffectsBlock.GetInt(_BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput, out pgm);
-            this.PGM = pgm;
-        }
-    }
-
-    enum InputNames
-    {
-        Caspar1,
-        Caspar2,
-        Caspar3,
-        Caspar4,
-        ME2PGM,
-        ME2PVW,
-        ME1PGM,
-        ME1PVW,
-        SUPERSOURCE,
-        MEDIAPLAYER1,
-        MEDIAPLAYER2,
-        SCANCONVERTOR,
-        OTHER
-    }
-
-    class AtemInput
-    {
-        public InputNames InputName { get; set; }
-
-        public IBMDSwitcherInput BMDInput { get; set; }
-        public string AtemName
-        {
-            get
-            {
-                string name;
-                this.BMDInput.GetString(_BMDSwitcherInputPropertyId.bmdSwitcherInputPropertyIdLongName, out name);
-                return name;
-            }
-        }
-        public long AtemId
-        {
-            get
-            {
-                long id;
-                this.BMDInput.GetInputId(out id);
-                return id;
-            }
-        }
-        public AtemInput(InputNames name, ref IBMDSwitcherInput input)
-        {
-            this.BMDInput = input;
-            this.InputName = name;
-        }
-        public AtemInput(string name, ref IBMDSwitcherInput input)
-        {
-            InputNames inName;
-            try
-            {
-                inName = SwitcherMappings.NameMappings.First(i => i.Key == name).Value;
-            }
-            catch
-            {
-                inName = InputNames.OTHER;
-            }
-            this.InputName = inName;
-            this.BMDInput = input;
-        }
-    }
-
-    class SuperSourceBox
-    {
-        public IBMDSwitcherSuperSourceBox BMDSuperSourceBox { get; set; }
-        public long GetBoxInputId
-        {
-            get
-            {
-                long id;
-                this.BMDSuperSourceBox.GetInputSource(out id);
-                return id;
-
-            }
-        }
-
-        public SuperSourceBox(ref IBMDSwitcherSuperSourceBox ss)
-        {
-            this.BMDSuperSourceBox = ss;
-        }
-    }
-
-    static class SwitcherMappings
-    {
-        public static List<KeyValuePair<string, InputNames>> NameMappings
-        {
-            get
-            {
-                return new List<KeyValuePair<string, InputNames>>()
+                for (int i = 0; i < m_mixEffectBlocks.Length; i++)
                 {
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_CASPAR1"],InputNames.Caspar1),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_CASPAR2"],InputNames.Caspar2),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_CASPAR3"],InputNames.Caspar3),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_CASPAR4"],InputNames.Caspar4),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_SUPERSOURCE"],InputNames.SUPERSOURCE),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_MEDIAPLAYER1"],InputNames.MEDIAPLAYER1),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_MEDIAPLAYER2"],InputNames.MEDIAPLAYER2),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_SCANCONVERTOR"],InputNames.SCANCONVERTOR),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_ME1PGM"],InputNames.ME1PGM),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_ME1PVW"],InputNames.ME1PVW),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_ME2PGM"],InputNames.ME2PGM),
-                    new KeyValuePair<string, InputNames>(ConfigurationManager.AppSettings["ATEM_ME2PVW"],InputNames.ME2PVW)
-                };
+                    m_mixEffectBlocks[i].SetPreviewInput(inputId);
+                }
             }
         }
+
     }
 }

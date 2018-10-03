@@ -52,12 +52,27 @@ namespace SixteenMedia.ATEM.Broker
             }
         }
 
-        public void Notify(_BMDSwitcherEventType eventType)
+        void IBMDSwitcherCallback.Notify(_BMDSwitcherEventType eventType, _BMDSwitcherVideoMode coreVideoMode)
         {
-            if (eventType == _BMDSwitcherEventType.bmdSwitcherEventTypeDisconnected)
+            switch (eventType)
             {
-                if (SwitcherDisconnected != null)
-                    SwitcherDisconnected(this, null);
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeVideoModeChanged:
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeMethodForDownConvertedSDChanged:
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeDownConvertedHDVideoModeChanged:
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeMultiViewVideoModeChanged:
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypePowerStatusChanged:
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeDisconnected:
+                    SwitcherDisconnected?.Invoke(this, null);
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventType3GSDIOutputLevelChanged:
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -75,33 +90,46 @@ namespace SixteenMedia.ATEM.Broker
         {
         }
 
-        void IBMDSwitcherMixEffectBlockCallback.PropertyChanged(_BMDSwitcherMixEffectBlockPropertyId propId)
+        public void Notify(_BMDSwitcherMixEffectBlockEventType eventType)
         {
-            switch (propId)
+            switch (eventType)
             {
-                case _BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdProgramInput:
-                    if (ProgramInputChanged != null)
-                        ProgramInputChanged(this, null);
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeProgramInputChanged:
+                    ProgramInputChanged?.Invoke(this, null);
                     break;
-                case _BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdPreviewInput:
-                    if (PreviewInputChanged != null)
-                        PreviewInputChanged(this, null);
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewInputChanged:
+                    PreviewInputChanged?.Invoke(this, null);
                     break;
-                case _BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeTransitionPositionChanged:
+                    TransitionPositionChanged?.Invoke(this, null);
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeTransitionFramesRemainingChanged:
                     if (TransitionFramesRemainingChanged != null)
                         TransitionFramesRemainingChanged(this, null);
                     break;
-                case _BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
-                    if (TransitionPositionChanged != null)
-                        TransitionPositionChanged(this, null);
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInTransitionChanged:
+                    InTransitionChanged?.Invoke(this, null);
                     break;
-                case _BMDSwitcherMixEffectBlockPropertyId.bmdSwitcherMixEffectBlockPropertyIdInTransition:
-                    if (InTransitionChanged != null)
-                        InTransitionChanged(this, null);
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackFramesRemainingChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInFadeToBlackChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewLiveChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewTransitionChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInputAvailabilityMaskChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackRateChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackFullyBlackChanged:
+                    break;
+                case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackInTransitionChanged:
+                    break;
+                default:
                     break;
             }
         }
-
     }
 
     class InputMonitor : IBMDSwitcherInputCallback
@@ -117,13 +145,26 @@ namespace SixteenMedia.ATEM.Broker
             m_input = input;
         }
 
-        void IBMDSwitcherInputCallback.PropertyChanged(_BMDSwitcherInputPropertyId propId)
+        public void Notify(_BMDSwitcherInputEventType eventType)
         {
-            switch (propId)
+            switch (eventType)
             {
-                case _BMDSwitcherInputPropertyId.bmdSwitcherInputPropertyIdLongName:
-                    if (LongNameChanged != null)
-                        LongNameChanged(this, null);
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeShortNameChanged:
+                    break;
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeLongNameChanged:
+                    LongNameChanged?.Invoke(this, null);
+                    break;
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeAreNamesDefaultChanged:
+                    break;
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeIsProgramTalliedChanged:
+                    break;
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeIsPreviewTalliedChanged:
+                    break;
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeAvailableExternalPortTypesChanged:
+                    break;
+                case _BMDSwitcherInputEventType.bmdSwitcherInputEventTypeCurrentExternalPortTypeChanged:
+                    break;
+                default:
                     break;
             }
         }
