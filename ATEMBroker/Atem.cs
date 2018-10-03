@@ -9,7 +9,7 @@ using System.Configuration;
 
 namespace SixteenMedia.ATEM.Broker
 {
-    class Atem
+    public class Atem
     {
         #region private fields
         /// <summary>

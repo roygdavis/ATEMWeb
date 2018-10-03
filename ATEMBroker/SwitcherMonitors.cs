@@ -34,7 +34,7 @@ namespace SixteenMedia.ATEM.Broker
 {
     public delegate void SwitcherEventHandler(object sender, object args);
 
-    class SwitcherMonitor : IBMDSwitcherCallback
+    public class SwitcherMonitor : IBMDSwitcherCallback
     {
         // Events:
         public event SwitcherEventHandler SwitcherDisconnected;
@@ -77,7 +77,7 @@ namespace SixteenMedia.ATEM.Broker
         }
     }
 
-    class MixEffectBlockMonitor : IBMDSwitcherMixEffectBlockCallback
+    public class MixEffectBlockMonitor : IBMDSwitcherMixEffectBlockCallback
     {
         // Events:
         public event SwitcherEventHandler ProgramInputChanged;
@@ -132,7 +132,7 @@ namespace SixteenMedia.ATEM.Broker
         }
     }
 
-    class InputMonitor : IBMDSwitcherInputCallback
+    public class InputMonitor : IBMDSwitcherInputCallback
     {
         // Events:
         public event SwitcherEventHandler LongNameChanged;
