@@ -12,8 +12,6 @@ namespace ATEMBrokerWebApp
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
-        public SixteenMedia.ATEM.Broker.Atem atem;
-
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -21,9 +19,6 @@ namespace ATEMBrokerWebApp
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
-            atem = new SixteenMedia.ATEM.Broker.Atem();
-            atem.Connect(ConfigurationManager.AppSettings["atemIP"]);
         }
     }
 }
