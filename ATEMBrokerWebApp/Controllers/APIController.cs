@@ -35,5 +35,5 @@ namespace ATEMBrokerWebApp.Controllers
             Atem = new SixteenMedia.ATEM.Broker.Atem();
             Atem.Connect(ConfigurationManager.AppSettings["atemIP"]);
         }
-}
+    }
 }
