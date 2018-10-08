@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions
+namespace ATEMWeb.Areas.HelpPage.ModelDescriptions
 {
     internal static class ModelNameHelper
     {

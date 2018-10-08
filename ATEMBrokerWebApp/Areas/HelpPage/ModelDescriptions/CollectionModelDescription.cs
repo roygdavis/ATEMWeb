@@ -1,4 +1,4 @@
-namespace ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions
+namespace ATEMWeb.Areas.HelpPage.ModelDescriptions
 {
     public class CollectionModelDescription : ModelDescription
     {

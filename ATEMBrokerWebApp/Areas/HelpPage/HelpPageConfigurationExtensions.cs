@@ -11,10 +11,10 @@ using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
-using ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions;
-using ATEMBrokerWebApp.Areas.HelpPage.Models;
+using ATEMWeb.Areas.HelpPage.ModelDescriptions;
+using ATEMWeb.Areas.HelpPage.Models;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage
+namespace ATEMWeb.Areas.HelpPage
 {
     public static class HelpPageConfigurationExtensions
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions
+namespace ATEMWeb.Areas.HelpPage.ModelDescriptions
 {
     public interface IModelDocumentationProvider
     {

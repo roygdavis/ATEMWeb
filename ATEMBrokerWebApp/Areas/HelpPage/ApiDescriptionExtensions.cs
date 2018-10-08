@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Description;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage
+namespace ATEMWeb.Areas.HelpPage
 {
     public static class ApiDescriptionExtensions
     {

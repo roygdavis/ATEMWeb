@@ -1,7 +1,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage
+namespace ATEMWeb.Areas.HelpPage
 {
     public class HelpPageAreaRegistration : AreaRegistration
     {

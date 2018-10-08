@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions
+namespace ATEMWeb.Areas.HelpPage.ModelDescriptions
 {
     public class ParameterDescription
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ATEMBrokerWebApp.Controllers
+namespace ATEMWeb.Controllers
 {
     public class HomeController : Controller
     {

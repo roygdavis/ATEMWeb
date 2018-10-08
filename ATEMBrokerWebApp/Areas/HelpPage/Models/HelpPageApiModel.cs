@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions;
+using ATEMWeb.Areas.HelpPage.ModelDescriptions;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage.Models
+namespace ATEMWeb.Areas.HelpPage.Models
 {
     /// <summary>
     /// The model that represents an API displayed on the help page.

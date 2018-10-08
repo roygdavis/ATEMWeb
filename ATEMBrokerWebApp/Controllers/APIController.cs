@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 
-namespace ATEMBrokerWebApp.Controllers
+namespace ATEMWeb.Controllers
 {
     public class APIController : ApiController
     {

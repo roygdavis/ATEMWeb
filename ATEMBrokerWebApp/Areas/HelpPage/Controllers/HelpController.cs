@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions;
-using ATEMBrokerWebApp.Areas.HelpPage.Models;
+using ATEMWeb.Areas.HelpPage.ModelDescriptions;
+using ATEMWeb.Areas.HelpPage.Models;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage.Controllers
+namespace ATEMWeb.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.

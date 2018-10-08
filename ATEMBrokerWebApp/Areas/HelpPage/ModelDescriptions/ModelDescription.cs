@@ -1,6 +1,6 @@
 using System;
 
-namespace ATEMBrokerWebApp.Areas.HelpPage.ModelDescriptions
+namespace ATEMWeb.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.
