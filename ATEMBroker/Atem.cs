@@ -25,7 +25,7 @@ namespace SixteenMedia.ATEM.Broker
         /// <summary>
         /// An array containing the ME Block objects
         /// </summary>
-        private IBMDSwitcherMixEffectBlock[] m_mixEffectBlocks;
+        private Extensions.MEBlock[] m_mixEffectBlocks;
 
         /// <summary>
         /// Object which handles event handling/monitoring of the Switcher
@@ -71,9 +71,9 @@ namespace SixteenMedia.ATEM.Broker
             // invoke on the Windows Forms object. The lambda expression is just a simplification.
             m_switcherMonitor.SwitcherDisconnected += new SwitcherEventHandler((s, a) => SwitcherDisconnected());
 
-            m_mixEffectBlockMonitor = new MixEffectBlockMonitor();
-            m_mixEffectBlockMonitor.ProgramInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
-            m_mixEffectBlockMonitor.PreviewInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
+            //m_mixEffectBlockMonitor = new MixEffectBlockMonitor();
+            //m_mixEffectBlockMonitor.ProgramInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
+            //m_mixEffectBlockMonitor.PreviewInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
 
             m_switcherDiscovery = new CBMDSwitcherDiscovery();
             if (m_switcherDiscovery == null)
@@ -130,11 +130,8 @@ namespace SixteenMedia.ATEM.Broker
                 {
                     if (m_mixEffectBlocks[i] != null)
                     {
-                        // Remove callback
-                        m_mixEffectBlocks[i].RemoveCallback(m_mixEffectBlockMonitor);
-
-                        // Release reference
-                        m_mixEffectBlocks[i] = null;
+                        // Dispose reference
+                        m_mixEffectBlocks[i].Dispose();
                     }
                 }
 
@@ -184,32 +181,35 @@ namespace SixteenMedia.ATEM.Broker
                 // We're not null, we increment our Mix Effect count!
                 meCount++;
 
-                // Add event handling to the newly found ME Block
-                meBlock.AddCallback(m_mixEffectBlockMonitor);
-
                 // is this the first ME Block?
                 if (meCount == 0)
                 {
                     // Yes, so we init our ME Block array with just one item
-                    m_mixEffectBlocks = new IBMDSwitcherMixEffectBlock[1];
-                    m_mixEffectBlocks[0] = meBlock;
+                    m_mixEffectBlocks = new Extensions.MEBlock[1];
+                    m_mixEffectBlocks[0] = new Extensions.MEBlock(meBlock);
+                    m_mixEffectBlocks[0].ProgramInputChanged += Atem_ProgramInputChanged;
                 }
                 else // otherwise we re-create our ME Block array and increase size by one!
                 {
-                    IBMDSwitcherMixEffectBlock[] oldMEArray = m_mixEffectBlocks;
-                    m_mixEffectBlocks = new IBMDSwitcherMixEffectBlock[meCount];
+                    Extensions.MEBlock[] oldMEArray = m_mixEffectBlocks;
+                    m_mixEffectBlocks = new Extensions.MEBlock[meCount];
                     for (int i = 0; i < meCount; i++)
                     {
                         m_mixEffectBlocks[i] = oldMEArray[i];
                     }
-                    m_mixEffectBlocks[meCount] = meBlock;
+                    m_mixEffectBlocks[meCount] = new Extensions.MEBlock(meBlock);
                 }
 
                 // Try and get the next block.  A ref of null means there are no more Mix Effects Blocks on this ATEM
                 meIterator.Next(out meBlock);
             }
         }
-        
+
+        private void Atem_ProgramInputChanged(object sender, EventArgs e)
+        {
+            OnProgramInputChanged();
+        }
+
         private void SwitcherConnected()
         {
             // TODO: Make this an event
@@ -273,7 +273,7 @@ namespace SixteenMedia.ATEM.Broker
             {
                 for (int i = 0; i < m_mixEffectBlocks.Length; i++)
                 {
-                    m_mixEffectBlocks[i].SetProgramInput(inputId);
+                    m_mixEffectBlocks[i].ProgramInput = inputId;
                 }
             }
         }
@@ -288,7 +288,7 @@ namespace SixteenMedia.ATEM.Broker
             {
                 for (int i = 0; i < m_mixEffectBlocks.Length; i++)
                 {
-                    m_mixEffectBlocks[i].SetPreviewInput(inputId);
+                    m_mixEffectBlocks[i].PreviewInput = inputId;
                 }
             }
         }
@@ -303,7 +303,7 @@ namespace SixteenMedia.ATEM.Broker
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    
+                    nullifyMixEffectsBlocks();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
