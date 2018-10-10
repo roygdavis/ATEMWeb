@@ -10,6 +10,8 @@ You'll need to install version 7.5.2 of the Blackmagic Switchers application, fo
 
 Install .Net runtime 4.6.1
 
+Edit web.config with the IP of your ATEM.
+
 Compile & run.
 
 http://<host>:<port>/index.html will providea simple web page showing the ATEM events
