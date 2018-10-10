@@ -6,6 +6,7 @@ using System.Web;
 using ATEMWeb.Hubs;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using SixteenMedia.ATEM.Broker;
 
 namespace ATEMWeb.Classes
 {
@@ -38,15 +39,15 @@ namespace ATEMWeb.Classes
             Atem.Connect(ConfigurationManager.AppSettings["atemIP"]);
         }
 
-        private void Atem_PVWInputChanged(object sender, EventArgs e)
+        private void Atem_PVWInputChanged(object sender, MixEffectsEventArgs e)
         {
-            Clients.All.notifyAtemPVWEvent("PVW Changed");
+            Clients.All.notifyAtemPVWEvent(string.Format("PVW Changed: {0}", e.Input));
         }
 
-        private void Atem_PGMInputChanged(object sender, EventArgs e)
+        private void Atem_PGMInputChanged(object sender, MixEffectsEventArgs e)
         {
             PGM = "100";
-            Clients.All.notifyAtemPGMEvent("PGM Changed");
+            Clients.All.notifyAtemPGMEvent(string.Format("PGM Changed: {0}", e.Input));
         }
 
         private void Atem_Disconnected(object sender, EventArgs e)

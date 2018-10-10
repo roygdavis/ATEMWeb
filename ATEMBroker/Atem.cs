@@ -9,7 +9,8 @@ using System.Configuration;
 
 namespace SixteenMedia.ATEM.Broker
 {
-    public class Atem:IDisposable
+    public class Atem:IBMDSwitcherCallback,
+        IDisposable
     {
         #region private fields
         /// <summary>
@@ -26,51 +27,16 @@ namespace SixteenMedia.ATEM.Broker
         /// An array containing the ME Block objects
         /// </summary>
         private Extensions.MEBlock[] m_mixEffectBlocks;
-
-        /// <summary>
-        /// Object which handles event handling/monitoring of the Switcher
-        /// </summary>
-        private SwitcherMonitor m_switcherMonitor;
-
-        /// <summary>
-        /// Object which handles event handling/monitoring of the Mix Effects block
-        /// </summary>
-        private MixEffectBlockMonitor m_mixEffectBlockMonitor;
         #endregion
 
         #region Events
-        /// <summary>
-        /// Called when the PGM bus input changes successfully
-        /// </summary>
-
-        public event EventHandler PGMInputChanged;
-        /// <summary>
-        /// Called when the PVW bus input changes successfully
-        /// </summary>
-        public event EventHandler PVWInputChanged;
-
-        /// <summary>
-        /// Called when the Atem is connected successfully
-        /// </summary>
-        public event EventHandler Connected;
-
-        /// <summary>
-        /// Called when the Atem is disconnected successfully
-        /// </summary>
-        public event EventHandler Disconnected;
+        
         #endregion
 
         #region Constructors
         public Atem()
         {
-            m_switcherMonitor = new SwitcherMonitor();
-            // note: this invoke pattern ensures our callback is called in the main thread. We are making double
-            // use of lambda expressions here to achieve this.
-            // Essentially, the events will arrive at the callback class (implemented by our monitor classes)
-            // on a separate thread. We must marshal these to the main thread, and we're doing this by calling
-            // invoke on the Windows Forms object. The lambda expression is just a simplification.
-            m_switcherMonitor.SwitcherDisconnected += new SwitcherEventHandler((s, a) => SwitcherDisconnected());
-
+            
             //m_mixEffectBlockMonitor = new MixEffectBlockMonitor();
             //m_mixEffectBlockMonitor.ProgramInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
             //m_mixEffectBlockMonitor.PreviewInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
@@ -85,21 +51,46 @@ namespace SixteenMedia.ATEM.Broker
         }
         #endregion
 
-        #region Event creation methods
-        protected void OnProgramInputChanged()
+        #region Events
+        /// <summary>
+        /// Called when the PGM bus input changes successfully
+        /// </summary>
+        public event EventHandler<MixEffectsEventArgs> PGMInputChanged;
+        
+        /// <summary>
+        /// Called when the PVW bus input changes successfully
+        /// </summary>
+        public event EventHandler<MixEffectsEventArgs> PVWInputChanged;
+
+        /// <summary>
+        /// Called when the Atem is connected successfully
+        /// </summary>
+        public event EventHandler Connected;
+
+        /// <summary>
+        /// Called when the Atem is disconnected successfully
+        /// </summary>
+        public event EventHandler Disconnected;
+
+        protected void OnProgramInputChanged(MixEffectsEventArgs e)
         {
             if (this.PGMInputChanged != null)
             {
-                PGMInputChanged(this, new EventArgs());
+                PGMInputChanged(this, e);
             }
         }
 
-        protected void OnPreviewInputChanged()
+        protected void OnPreviewInputChanged(MixEffectsEventArgs e)
         {
             if (this.PVWInputChanged != null)
             {
-                PVWInputChanged(this, new EventArgs());
+                PVWInputChanged(this, e);
             }
+        }
+
+        public void Notify(_BMDSwitcherEventType eventType, _BMDSwitcherVideoMode coreVideoMode)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -109,7 +100,7 @@ namespace SixteenMedia.ATEM.Broker
             if (m_switcher != null)
             {
                 // Remove callback:
-                m_switcher.RemoveCallback(m_switcherMonitor);
+                m_switcher.RemoveCallback(this);
 
                 // release reference:
                 m_switcher = null;
@@ -186,7 +177,7 @@ namespace SixteenMedia.ATEM.Broker
                 {
                     // Yes, so we init our ME Block array with just one item
                     m_mixEffectBlocks = new Extensions.MEBlock[1];
-                    m_mixEffectBlocks[0] = new Extensions.MEBlock(meBlock);
+                    m_mixEffectBlocks[0] = new Extensions.MEBlock(meBlock, meCount);
                     m_mixEffectBlocks[0].ProgramInputChanged += Atem_ProgramInputChanged;
                 }
                 else // otherwise we re-create our ME Block array and increase size by one!
@@ -197,7 +188,7 @@ namespace SixteenMedia.ATEM.Broker
                     {
                         m_mixEffectBlocks[i] = oldMEArray[i];
                     }
-                    m_mixEffectBlocks[meCount] = new Extensions.MEBlock(meBlock);
+                    m_mixEffectBlocks[meCount] = new Extensions.MEBlock(meBlock, meCount);
                 }
 
                 // Try and get the next block.  A ref of null means there are no more Mix Effects Blocks on this ATEM
@@ -205,9 +196,9 @@ namespace SixteenMedia.ATEM.Broker
             }
         }
 
-        private void Atem_ProgramInputChanged(object sender, EventArgs e)
+        private void Atem_ProgramInputChanged(object sender, MixEffectsEventArgs e)
         {
-            OnProgramInputChanged();
+            OnProgramInputChanged(e);
         }
 
         private void SwitcherConnected()
@@ -219,7 +210,7 @@ namespace SixteenMedia.ATEM.Broker
             m_switcher.GetProductName(out switcherName);
 
             // Install SwitcherMonitor callbacks:
-            m_switcher.AddCallback(m_switcherMonitor);
+            m_switcher.AddCallback(this);
 
             // mix effects blocks
             getMEBlocks();
@@ -328,6 +319,71 @@ namespace SixteenMedia.ATEM.Broker
             // GC.SuppressFinalize(this);
         }
         #endregion
+
+        #region IBMDSwitcher helper Getter/Setters
+        public _BMDSwitcherVideoMode VideoMode
+        {
+            get
+            {
+                if (m_switcher != null)
+                {
+                    m_switcher.GetVideoMode(out _BMDSwitcherVideoMode v);
+                    return v;
+                }
+                throw new NullReferenceException("m_switcher is null");
+            }
+            set
+            {
+                m_switcher.SetVideoMode(value);
+            }
+        }
+
+        public string ProductName
+        {
+            get
+            {
+                if (m_switcher != null)
+                {
+                    m_switcher.GetProductName(out string v);
+                    return v;
+                }
+                throw new NullReferenceException("m_switcher is null");
+            }
+        }
+
+        public _BMDSwitcher3GSDIOutputLevel SDI3GOutputLevel
+        {
+            get
+            {
+                if (m_switcher!=null)
+                {
+                    m_switcher.Get3GSDIOutputLevel(out _BMDSwitcher3GSDIOutputLevel v);
+                    return v;
+                }
+                throw new NullReferenceException("m_switcher is null");
+            }
+            set
+            {
+                m_switcher.Set3GSDIOutputLevel(value);
+            }
+        }
+
+        public _BMDSwitcherPowerStatus PowerStatus
+        {
+            get
+            {
+                if (m_switcher != null)
+                {
+                    m_switcher.GetPowerStatus(out _BMDSwitcherPowerStatus v);
+                    return v;
+                }
+                throw new NullReferenceException("m_switcher is null");
+            }
+        }
+
+        #endregion
+
+        
 
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="Atem.cs" />
     <Compile Include="AtemEnums.cs" />
     <Compile Include="AtemState.cs" />
+    <Compile Include="EventHandlers.cs" />
     <Compile Include="Extensions\MEBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SwitcherMonitors.cs" />
