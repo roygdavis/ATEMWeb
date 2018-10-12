@@ -50,8 +50,11 @@
     <Compile Include="AtemEnums.cs" />
     <Compile Include="AtemState.cs" />
     <Compile Include="EventHandlers.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="Extensions\MEBlock.cs" />
+    <Compile Include="MixEffectBlockConnectedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SwitcherBase.cs" />
     <Compile Include="SwitcherMonitors.cs" />
   </ItemGroup>
   <ItemGroup />

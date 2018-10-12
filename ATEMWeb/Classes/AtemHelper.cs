@@ -33,20 +33,42 @@ namespace ATEMWeb.Classes
             Clients = clients;
             Atem = new SixteenMedia.ATEM.Broker.Atem();
             Atem.Connected += Atem_Connected;
-            Atem.Disconnected += Atem_Disconnected;
-            Atem.PGMInputChanged += Atem_PGMInputChanged;
-            Atem.PVWInputChanged += Atem_PVWInputChanged;
+            Atem.MixEffectBlockConnectedEvent += Atem_MixEffectBlockConnectedEvent;
+            Atem.DisconnectedEvent += Atem_Disconnected;
             Atem.Connect(ConfigurationManager.AppSettings["atemIP"]);
         }
 
-        private void Atem_PVWInputChanged(object sender, MixEffectsEventArgs e)
+        private void Atem_MixEffectBlockConnectedEvent(object sender, MixEffectBlockConnectedEventArgs e)
+        {
+            e.ConnectedMEBlock.ProgramInputChanged += ConnectedMEBlock_ProgramInputChanged;
+            e.ConnectedMEBlock.PreviewInputChanged += ConnectedMEBlock_PreviewInputChanged;
+            e.ConnectedMEBlock.InTransitionChanged += ConnectedMEBlock_InTransitionChanged;
+            e.ConnectedMEBlock.TransitionFramesRemainingChanged += ConnectedMEBlock_TransitionFramesRemainingChanged;
+            e.ConnectedMEBlock.TransitionPositionChanged += ConnectedMEBlock_TransitionPositionChanged;
+        }
+
+        private void ConnectedMEBlock_TransitionPositionChanged(object sender, MixEffectsEventArgs e)
+        {
+            Clients.All.notifyAtemPVWEvent(string.Format("Transition position: {0}", e.TransitionPosition));
+        }
+
+        private void ConnectedMEBlock_TransitionFramesRemainingChanged(object sender, MixEffectsEventArgs e)
+        {
+            Clients.All.notifyAtemPVWEvent(string.Format("Transition frames remaining: {0}", e.TransitionFramesRemaining));
+        }
+
+        private void ConnectedMEBlock_InTransitionChanged(object sender, MixEffectsEventArgs e)
+        {
+            Clients.All.notifyAtemPVWEvent(string.Format("In Transition: {0}", e.InTransition));
+        }
+
+        private void ConnectedMEBlock_PreviewInputChanged(object sender, MixEffectsEventArgs e)
         {
             Clients.All.notifyAtemPVWEvent(string.Format("PVW Changed: {0}", e.Input));
         }
 
-        private void Atem_PGMInputChanged(object sender, MixEffectsEventArgs e)
+        private void ConnectedMEBlock_ProgramInputChanged(object sender, MixEffectsEventArgs e)
         {
-            PGM = "100";
             Clients.All.notifyAtemPGMEvent(string.Format("PGM Changed: {0}", e.Input));
         }
 

@@ -29,9 +29,22 @@ namespace SixteenMedia.ATEM.Broker
         private Extensions.MEBlock[] m_mixEffectBlocks;
         #endregion
 
-        #region Events
-        
-        #endregion
+        #region Public properties
+        public List<Extensions.MEBlock> MixEffectsBlocks
+        {
+            get
+            {
+                if (m_mixEffectBlocks != null)
+                {
+                    return m_mixEffectBlocks.ToList();
+                }
+                else
+                {
+                    return new List<Extensions.MEBlock>();
+                }
+            }
+        }
+            #endregion
 
         #region Constructors
         public Atem()
@@ -52,45 +65,58 @@ namespace SixteenMedia.ATEM.Broker
         #endregion
 
         #region Events
-        /// <summary>
-        /// Called when the PGM bus input changes successfully
-        /// </summary>
-        public event EventHandler<MixEffectsEventArgs> PGMInputChanged;
-        
-        /// <summary>
-        /// Called when the PVW bus input changes successfully
-        /// </summary>
-        public event EventHandler<MixEffectsEventArgs> PVWInputChanged;
 
+        /// <summary>
+        /// Fired when a new Mix Effects block as detected and added
+        /// </summary>
+        public event EventHandler<MixEffectBlockConnectedEventArgs> MixEffectBlockConnectedEvent;
+        
         /// <summary>
         /// Called when the Atem is connected successfully
         /// </summary>
-        public event EventHandler Connected;
+        public event EventHandler<EventArgs> Connected;
 
         /// <summary>
         /// Called when the Atem is disconnected successfully
         /// </summary>
-        public event EventHandler Disconnected;
+        public event EventHandler<EventArgs> DisconnectedEvent;
 
-        protected void OnProgramInputChanged(MixEffectsEventArgs e)
-        {
-            if (this.PGMInputChanged != null)
-            {
-                PGMInputChanged(this, e);
-            }
-        }
-
-        protected void OnPreviewInputChanged(MixEffectsEventArgs e)
-        {
-            if (this.PVWInputChanged != null)
-            {
-                PVWInputChanged(this, e);
-            }
-        }
+        public event EventHandler<EventArgs> VideoModeChangedEvent;
+        public event EventHandler<EventArgs> MethodForDownConvertedSDChangedEvent;
+        public event EventHandler<EventArgs> DownConvertedHDVideoModeChangedEvent;
+        public event EventHandler<EventArgs> MultiViewVideoModeChangedEvent;
+        public event EventHandler<EventArgs> PowerStatusChangedEvent;
+        
+        public event EventHandler<EventArgs> SDI3GOutputLevelChangedEvent;
 
         public void Notify(_BMDSwitcherEventType eventType, _BMDSwitcherVideoMode coreVideoMode)
         {
-            throw new NotImplementedException();
+            switch (eventType)
+            {
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeVideoModeChanged:
+                    VideoModeChangedEvent?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeMethodForDownConvertedSDChanged:
+                    MethodForDownConvertedSDChangedEvent?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeDownConvertedHDVideoModeChanged:
+                    DownConvertedHDVideoModeChangedEvent?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeMultiViewVideoModeChanged:
+                    MultiViewVideoModeChangedEvent?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypePowerStatusChanged:
+                    PowerStatusChangedEvent?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeDisconnected:
+                    DisconnectedEvent?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventType3GSDIOutputLevelChanged:
+                    SDI3GOutputLevelChangedEvent?.Invoke(this, new EventArgs());
+                    break;
+                default:
+                    break;
+            }
         }
         #endregion
 
@@ -107,10 +133,7 @@ namespace SixteenMedia.ATEM.Broker
             }
 
             nullifyMixEffectsBlocks();
-            if (this.Disconnected != null)
-            {
-                Disconnected(this, new EventArgs());
-            }
+            DisconnectedEvent?.Invoke(this, new EventArgs());
         }
 
         private void nullifyMixEffectsBlocks()
@@ -135,36 +158,26 @@ namespace SixteenMedia.ATEM.Broker
             // ensure m_mixEffectBlocks is empty
             nullifyMixEffectsBlocks();
 
-            // Create an iterator
-            IBMDSwitcherMixEffectBlockIterator meIterator = null;
-
             // init the mix effects count, this is a zero-based count so we start at -1
             int meCount = -1;
 
-            // Holds the pointer to the mix effects iterator object
-            IntPtr meIteratorPtr;
-
-            // The COM class GUID of the iterator
+            // meIteratorIID holds the COM class GUID of the iterator
             Guid meIteratorIID = typeof(IBMDSwitcherMixEffectBlockIterator).GUID;
 
-            // Now create the iterator
-            m_switcher.CreateIterator(ref meIteratorIID, out meIteratorPtr);
+            // meIteratorPtr holds the pointer to the mix effects iterator object
+            // create the iterator and out to the meIteratorPtr pointer
+            m_switcher.CreateIterator(ref meIteratorIID, out IntPtr meIteratorPtr);
 
-            // if we're not null then do the conversion to a .net class
-            if (meIteratorPtr != null)
-            {
-                meIterator = (IBMDSwitcherMixEffectBlockIterator)Marshal.GetObjectForIUnknown(meIteratorPtr);
-            }
-
+            // create the iterator
+            IBMDSwitcherMixEffectBlockIterator meIterator = (IBMDSwitcherMixEffectBlockIterator)Marshal.GetObjectForIUnknown(meIteratorPtr);
+            
             // bail if that returned null
             if (meIterator == null)
                 return;
 
             // now we can start to iterate over the ME blocks this ATEM has. Usually the basic ATEM's have only one Mix Effect Block.  The 2M/E ATEM's have two.  Some have more.
-            IBMDSwitcherMixEffectBlock meBlock = null;
-
             // try and get the Mix Effect Block from the iterator
-            meIterator.Next(out meBlock);
+            meIterator.Next(out IBMDSwitcherMixEffectBlock meBlock);
 
             // if that wasn't null then add to our array of ME Blocks
             while (meBlock != null)
@@ -178,7 +191,6 @@ namespace SixteenMedia.ATEM.Broker
                     // Yes, so we init our ME Block array with just one item
                     m_mixEffectBlocks = new Extensions.MEBlock[1];
                     m_mixEffectBlocks[0] = new Extensions.MEBlock(meBlock, meCount);
-                    m_mixEffectBlocks[0].ProgramInputChanged += Atem_ProgramInputChanged;
                 }
                 else // otherwise we re-create our ME Block array and increase size by one!
                 {
@@ -191,23 +203,22 @@ namespace SixteenMedia.ATEM.Broker
                     m_mixEffectBlocks[meCount] = new Extensions.MEBlock(meBlock, meCount);
                 }
 
+                // raise an event
+                // the consumer of this event should hook into the mbBlock events
+                MixEffectBlockConnectedEvent?.Invoke(this, new MixEffectBlockConnectedEventArgs(m_mixEffectBlocks[0]));
+
                 // Try and get the next block.  A ref of null means there are no more Mix Effects Blocks on this ATEM
                 meIterator.Next(out meBlock);
             }
         }
 
-        private void Atem_ProgramInputChanged(object sender, MixEffectsEventArgs e)
-        {
-            OnProgramInputChanged(e);
-        }
 
         private void SwitcherConnected()
         {
             // TODO: Make this an event
 
             // Get the switcher name:
-            string switcherName;
-            m_switcher.GetProductName(out switcherName);
+            m_switcher.GetProductName(out string switcherName);
 
             // Install SwitcherMonitor callbacks:
             m_switcher.AddCallback(this);
@@ -232,57 +243,26 @@ namespace SixteenMedia.ATEM.Broker
                 // do this in a separate thread to prevent the main GUI thread blocking.
                 m_switcherDiscovery.ConnectTo(address, out m_switcher, out failReason);
             }
-            catch (COMException)
+            catch (COMException comEx)
             {
                 // An exception will be thrown if ConnectTo fails. For more information, see failReason.
                 switch (failReason)
                 {
                     case _BMDSwitcherConnectToFailure.bmdSwitcherConnectToFailureNoResponse:
                         // MessageBox.Show("No response from Switcher", "Error");
-                        break;
+                        throw new ConnectFailureNoResponseException(string.Format("Cannot connect to switcher at address: {0}", address));
                     case _BMDSwitcherConnectToFailure.bmdSwitcherConnectToFailureIncompatibleFirmware:
                         // MessageBox.Show("Switcher has incompatible firmware", "Error");
-                        break;
+                        throw new ConnectFailureIncompatibleFirmwareException(string.Format("Switcher at address {0} has incompatible firmware.  Either rebuild this library to the switcher version or upgrade the switcher firmware to match.", address));
                     default:
-                        // MessageBox.Show("Connection failed for unknown reason", "Error");
-                        break;
+                        throw new Exception(string.Format("Cannot connect to switcher at address {0}.  See inner exception for more information", address), comEx);
                 }
-                return;
+                throw new Exception(string.Format("Cannot connect to switcher at address {0}.  See inner exception for more information", address), comEx);
             }
 
             SwitcherConnected();
         }
         #endregion
-
-        /// <summary>
-        /// Sets the input for the PGM bus on the ATEM
-        /// </summary>
-        /// <param name="inputId"></param>
-        public void SetPGM(long inputId)
-        {
-            if (m_mixEffectBlocks != null)
-            {
-                for (int i = 0; i < m_mixEffectBlocks.Length; i++)
-                {
-                    m_mixEffectBlocks[i].ProgramInput = inputId;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the input for PVW bus on the ATEM
-        /// </summary>
-        /// <param name="inputId"></param>
-        public void SetPVW(long inputId)
-        {
-            if (m_mixEffectBlocks != null)
-            {
-                for (int i = 0; i < m_mixEffectBlocks.Length; i++)
-                {
-                    m_mixEffectBlocks[i].PreviewInput = inputId;
-                }
-            }
-        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -382,8 +362,6 @@ namespace SixteenMedia.ATEM.Broker
         }
 
         #endregion
-
         
-
     }
 }

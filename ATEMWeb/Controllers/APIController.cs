@@ -17,7 +17,7 @@ namespace ATEMWeb.Controllers
             string result = string.Empty;
             try
             {
-                AtemHelper.Instance.Atem.SetPGM(Input);
+                AtemHelper.Instance.Atem.MixEffectsBlocks.First().ProgramInput = Input;
                 result = "Ok";
             }
             catch (Exception e)
