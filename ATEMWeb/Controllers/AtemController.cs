@@ -9,22 +9,20 @@ using System.Web.Mvc;
 
 namespace ATEMWeb.Controllers
 {
-    //[System.Web.Http.RoutePrefix("api")]
     public class AtemController : ApiController
     {
-        public string Get(string Function, int Duration, int Input)
+        public SixteenMedia.ATEM.Wrapper.Atem Get()
         {
-            string result = string.Empty;
             try
             {
-                AtemHelper.Instance.Atem.MixEffectsBlocks.First().ProgramInput = Input;
-                result = "Ok";
+                return AtemHelper.Instance.Atem;
             }
             catch (Exception e)
             {
-                result = e.Message;
+                return SixteenMedia.ATEM.Wrapper.Atem.Null;
             }
-            return result;
         }
+
+
     }
 }

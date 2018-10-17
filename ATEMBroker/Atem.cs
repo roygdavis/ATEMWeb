@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 using System.Runtime.InteropServices;
 using System.Configuration;
+using System.Runtime.Serialization;
 
 namespace SixteenMedia.ATEM.Wrapper
 {
-    public class Atem:IBMDSwitcherCallback,
+    [DataContract]
+    public class Atem : IBMDSwitcherCallback,
         IDisposable
     {
         #region private fields
@@ -30,6 +32,7 @@ namespace SixteenMedia.ATEM.Wrapper
         #endregion
 
         #region Public properties
+        [DataMember]
         public List<MEBlock> MixEffectsBlocks
         {
             get
@@ -44,7 +47,12 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
             }
         }
-            #endregion
+
+        [DataMember]
+        public string AtemIPAddress { get; set; }
+
+        public static Atem Null => new Atem();
+        #endregion
 
         #region Constructors
         public Atem()
@@ -236,6 +244,8 @@ namespace SixteenMedia.ATEM.Wrapper
 
         public void Connect(string address)
         {
+            this.AtemIPAddress = address;
+
             _BMDSwitcherConnectToFailure failReason = 0;
 
             try
@@ -303,6 +313,7 @@ namespace SixteenMedia.ATEM.Wrapper
         #endregion
 
         #region IBMDSwitcher helper Getter/Setters
+        [DataMember]
         public _BMDSwitcherVideoMode VideoMode
         {
             get
@@ -320,6 +331,7 @@ namespace SixteenMedia.ATEM.Wrapper
             }
         }
 
+        [DataMember]
         public string ProductName
         {
             get
@@ -331,8 +343,12 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 throw new NullReferenceException("m_switcher is null");
             }
+            // empty setter so that this property can be serialised
+            set { }
+
         }
 
+        [DataMember]
         public _BMDSwitcher3GSDIOutputLevel SDI3GOutputLevel
         {
             get
@@ -350,6 +366,7 @@ namespace SixteenMedia.ATEM.Wrapper
             }
         }
 
+        [DataMember]
         public _BMDSwitcherPowerStatus PowerStatus
         {
             get
@@ -361,6 +378,8 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 throw new NullReferenceException("m_switcher is null");
             }
+            // empty setter so that this property can be serialised
+            set { }
         }
 
         #endregion

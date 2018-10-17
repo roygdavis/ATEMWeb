@@ -13,5 +13,6 @@ namespace SixteenMedia.ATEM.Wrapper
         public uint TransitionFramesRemaining { get; set; }
         public double TransitionPosition { get; set; }
         public int InTransition { get; set; }
+        public int MixEffectsIndex { get; set; }
     }   
 }

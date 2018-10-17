@@ -37,11 +37,65 @@ namespace ATEMWeb.Classes
 
         private void Atem_MixEffectBlockConnectedEvent(object sender, MixEffectBlockConnectedEventArgs e)
         {
-           e.ConnectedMEBlock.ProgramInputChanged += ConnectedMEBlock_ProgramInputChanged;
+            e.ConnectedMEBlock.ProgramInputChanged += ConnectedMEBlock_ProgramInputChanged;
             e.ConnectedMEBlock.PreviewInputChanged += ConnectedMEBlock_PreviewInputChanged;
             e.ConnectedMEBlock.InTransitionChanged += ConnectedMEBlock_InTransitionChanged;
             e.ConnectedMEBlock.TransitionFramesRemainingChanged += ConnectedMEBlock_TransitionFramesRemainingChanged;
             e.ConnectedMEBlock.TransitionPositionChanged += ConnectedMEBlock_TransitionPositionChanged;
+            e.ConnectedMEBlock.AvailabilityMaskChanged += ConnectedMEBlock_AvailabilityMaskChanged;
+            e.ConnectedMEBlock.FadeToBlackFramesRemainingChanged += ConnectedMEBlock_FadeToBlackFramesRemainingChanged;
+            e.ConnectedMEBlock.FadeToBlackFullyBlackChanged += ConnectedMEBlock_FadeToBlackFullyBlackChanged;
+            e.ConnectedMEBlock.FadeToBlackInTransitionChanged += ConnectedMEBlock_FadeToBlackInTransitionChanged;
+            e.ConnectedMEBlock.FadeToBlackRateChanged += ConnectedMEBlock_FadeToBlackRateChanged;
+            e.ConnectedMEBlock.InFadeToBlackChanged += ConnectedMEBlock_InFadeToBlackChanged;
+            e.ConnectedMEBlock.InputAvailabilityMaskChanged += ConnectedMEBlock_InputAvailabilityMaskChanged;
+            e.ConnectedMEBlock.PreviewLiveChanged += ConnectedMEBlock_PreviewLiveChanged;
+            e.ConnectedMEBlock.PreviewTransitionChanged += ConnectedMEBlock_PreviewTransitionChanged;
+        }
+
+        private void ConnectedMEBlock_PreviewTransitionChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_PreviewLiveChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_InputAvailabilityMaskChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_InFadeToBlackChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_FadeToBlackRateChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_FadeToBlackInTransitionChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_FadeToBlackFullyBlackChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_FadeToBlackFramesRemainingChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectedMEBlock_AvailabilityMaskChanged(object sender, MixEffectsEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ConnectedMEBlock_TransitionPositionChanged(object sender, MixEffectsEventArgs e)
