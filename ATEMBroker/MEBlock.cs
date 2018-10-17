@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 
-namespace SixteenMedia.ATEM.Broker.Extensions
+namespace SixteenMedia.ATEM.Wrapper
 {
     /// <summary>
     /// Helper class to expose BMD ME block methods from Get/Set methods to .Net properties
     /// </summary>
-    public class MEBlock: SwitcherBase, IBMDSwitcherMixEffectBlockCallback,IDisposable
+    public class MEBlock:  IBMDSwitcherMixEffectBlockCallback,IDisposable
     {
         /// <summary>
         /// The Mix Effect Block interface
@@ -284,41 +284,26 @@ namespace SixteenMedia.ATEM.Broker.Extensions
         #region Event handling
 
         public event EventHandler<MixEffectsEventArgs> ProgramInputChanged;
-        protected void OnProgramInputChanged(MixEffectsEventArgs e)
-        {
-            ProgramInputChanged?.Invoke(this, e);
-        }
-
         public event EventHandler<MixEffectsEventArgs> PreviewInputChanged;
-        protected void OnPreviewInputChanged(MixEffectsEventArgs e)
-        {
-            PreviewInputChanged?.Invoke(this, e);
-        }
-
         public event EventHandler<MixEffectsEventArgs> TransitionFramesRemainingChanged;
-        protected void OnTransitionFramesRemainingChanged(MixEffectsEventArgs e)
-        {
-            TransitionFramesRemainingChanged?.Invoke(this, e);
-        }
-
         public event EventHandler<MixEffectsEventArgs> TransitionPositionChanged;
-        protected void OnTransitionPositionChanged(MixEffectsEventArgs e)
-        {
-            TransitionPositionChanged?.Invoke(this, e);
-        }
-
         public event EventHandler<MixEffectsEventArgs> InTransitionChanged;
-        protected void OnInTransitionChanged(MixEffectsEventArgs e)
-        {
-            InTransitionChanged?.Invoke(this, e);
-        }
+        public event EventHandler<MixEffectsEventArgs> InFadeToBlackChanged;
+        public event EventHandler<MixEffectsEventArgs> FadeToBlackFramesRemainingChanged;
+        public event EventHandler<MixEffectsEventArgs> PreviewLiveChanged;
+        public event EventHandler<MixEffectsEventArgs> PreviewTransitionChanged;
+        public event EventHandler<MixEffectsEventArgs> AvailabilityMaskChanged;
+        public event EventHandler<MixEffectsEventArgs> FadeToBlackRateChanged;
+        public event EventHandler<MixEffectsEventArgs> FadeToBlackFullyBlackChanged;
+        public event EventHandler<MixEffectsEventArgs> FadeToBlackInTransitionChanged;
+        public event EventHandler<MixEffectsEventArgs> InputAvailabilityMaskChanged;
 
         public void Notify(_BMDSwitcherMixEffectBlockEventType eventType)
         {
             switch (eventType)
             {
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeProgramInputChanged:
-                    OnProgramInputChanged(new MixEffectsEventArgs()
+                    ProgramInputChanged?.Invoke(this, new MixEffectsEventArgs()
                     {
                         Input = ProgramInput,
                         InTransition = InTransition,
@@ -328,7 +313,7 @@ namespace SixteenMedia.ATEM.Broker.Extensions
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewInputChanged:
-                    OnPreviewInputChanged(new MixEffectsEventArgs()
+                    PreviewInputChanged?.Invoke(this,new MixEffectsEventArgs()
                     {
                         Input = ProgramInput,
                         InTransition = InTransition,
@@ -338,7 +323,7 @@ namespace SixteenMedia.ATEM.Broker.Extensions
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeTransitionPositionChanged:
-                    OnTransitionPositionChanged(new MixEffectsEventArgs()
+                    TransitionPositionChanged?.Invoke(this, new MixEffectsEventArgs()
                     {
                         Input = ProgramInput,
                         InTransition = InTransition,
@@ -348,7 +333,7 @@ namespace SixteenMedia.ATEM.Broker.Extensions
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeTransitionFramesRemainingChanged:
-                    OnTransitionFramesRemainingChanged(new MixEffectsEventArgs()
+                    TransitionFramesRemainingChanged?.Invoke(this,new MixEffectsEventArgs()
                     {
                         Input = ProgramInput,
                         InTransition = InTransition,
@@ -358,7 +343,7 @@ namespace SixteenMedia.ATEM.Broker.Extensions
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInTransitionChanged:
-                    OnInTransitionChanged(new MixEffectsEventArgs()
+                    InTransitionChanged?.Invoke(this,new MixEffectsEventArgs()
                     {
                         Input = ProgramInput,
                         InTransition = InTransition,
@@ -368,20 +353,84 @@ namespace SixteenMedia.ATEM.Broker.Extensions
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackFramesRemainingChanged:
+                    FadeToBlackFramesRemainingChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.Program,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInFadeToBlackChanged:
+                    InFadeToBlackChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.Program,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewLiveChanged:
+                    PreviewLiveChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.Preview,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewTransitionChanged:
+                    PreviewTransitionChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.Preview,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInputAvailabilityMaskChanged:
+                    InputAvailabilityMaskChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.None,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackRateChanged:
+                    FadeToBlackRateChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.None,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackFullyBlackChanged:
+                    FadeToBlackFullyBlackChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.Program,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackInTransitionChanged:
+                    FadeToBlackInTransitionChanged?.Invoke(this, new MixEffectsEventArgs()
+                    {
+                        Input = ProgramInput,
+                        InTransition = InTransition,
+                        MEBus = MEBuses.Program,
+                        TransitionFramesRemaining = TransitionFramesRemaining,
+                        TransitionPosition = TransitionPosition
+                    });
                     break;
                 default:
                     break;

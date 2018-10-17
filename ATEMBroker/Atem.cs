@@ -7,7 +7,7 @@ using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 using System.Runtime.InteropServices;
 using System.Configuration;
 
-namespace SixteenMedia.ATEM.Broker
+namespace SixteenMedia.ATEM.Wrapper
 {
     public class Atem:IBMDSwitcherCallback,
         IDisposable
@@ -26,11 +26,11 @@ namespace SixteenMedia.ATEM.Broker
         /// <summary>
         /// An array containing the ME Block objects
         /// </summary>
-        private Extensions.MEBlock[] m_mixEffectBlocks;
+        private MEBlock[] m_mixEffectBlocks;
         #endregion
 
         #region Public properties
-        public List<Extensions.MEBlock> MixEffectsBlocks
+        public List<MEBlock> MixEffectsBlocks
         {
             get
             {
@@ -40,7 +40,7 @@ namespace SixteenMedia.ATEM.Broker
                 }
                 else
                 {
-                    return new List<Extensions.MEBlock>();
+                    return new List<MEBlock>();
                 }
             }
         }
@@ -153,6 +153,9 @@ namespace SixteenMedia.ATEM.Broker
             }
         }
 
+        /// <summary>
+        /// Creates the BMD iterator and retrives the Mix Effect(s) banks from the ATEM
+        /// </summary>
         private void getMEBlocks()
         {
             // ensure m_mixEffectBlocks is empty
@@ -189,29 +192,28 @@ namespace SixteenMedia.ATEM.Broker
                 if (meCount == 0)
                 {
                     // Yes, so we init our ME Block array with just one item
-                    m_mixEffectBlocks = new Extensions.MEBlock[1];
-                    m_mixEffectBlocks[0] = new Extensions.MEBlock(meBlock, meCount);
+                    m_mixEffectBlocks = new MEBlock[1];
+                    m_mixEffectBlocks[0] = new MEBlock(meBlock, meCount);
                 }
                 else // otherwise we re-create our ME Block array and increase size by one!
                 {
-                    Extensions.MEBlock[] oldMEArray = m_mixEffectBlocks;
-                    m_mixEffectBlocks = new Extensions.MEBlock[meCount];
+                    MEBlock[] oldMEArray = m_mixEffectBlocks;
+                    m_mixEffectBlocks = new MEBlock[meCount];
                     for (int i = 0; i < meCount; i++)
                     {
                         m_mixEffectBlocks[i] = oldMEArray[i];
                     }
-                    m_mixEffectBlocks[meCount] = new Extensions.MEBlock(meBlock, meCount);
+                    m_mixEffectBlocks[meCount] = new MEBlock(meBlock, meCount);
                 }
 
                 // raise an event
                 // the consumer of this event should hook into the mbBlock events
-                MixEffectBlockConnectedEvent?.Invoke(this, new MixEffectBlockConnectedEventArgs(m_mixEffectBlocks[0]));
+                MixEffectBlockConnectedEvent?.Invoke(this, new MixEffectBlockConnectedEventArgs(m_mixEffectBlocks[meCount]));
 
                 // Try and get the next block.  A ref of null means there are no more Mix Effects Blocks on this ATEM
                 meIterator.Next(out meBlock);
             }
         }
-
 
         private void SwitcherConnected()
         {

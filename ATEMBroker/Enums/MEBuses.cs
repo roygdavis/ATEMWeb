@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SixteenMedia.ATEM.Broker
+namespace SixteenMedia.ATEM.Wrapper
 {
-    public abstract class SwitcherBase
+    [Flags]
+    public enum MEBuses
     {
-        // Events:
-        
-
+        None = 0,
+        Program = 1,
+        Preview = 2
     }
 }

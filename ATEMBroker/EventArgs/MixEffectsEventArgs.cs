@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SixteenMedia.ATEM.Broker
+namespace SixteenMedia.ATEM.Wrapper
 {
     public class MixEffectsEventArgs : EventArgs
     {
@@ -13,12 +13,5 @@ namespace SixteenMedia.ATEM.Broker
         public uint TransitionFramesRemaining { get; set; }
         public double TransitionPosition { get; set; }
         public int InTransition { get; set; }
-    }
-
-    public enum MEBuses
-    {
-        Program,
-        Preview,
-        None
-    }    
+    }   
 }

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Web;
 using ATEMWeb.Hubs;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using SixteenMedia.ATEM.Broker;
+using SixteenMedia.ATEM.Wrapper;
 
 namespace ATEMWeb.Classes
 {
@@ -17,7 +14,7 @@ namespace ATEMWeb.Classes
 
         public static AtemHelper Instance => _instance.Value;
 
-        public SixteenMedia.ATEM.Broker.Atem Atem { get; private set; }
+        public Atem Atem { get; private set; }
         public string PGM { get; internal set; }
 
         public IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<ATEMEventsHub>();
@@ -31,7 +28,7 @@ namespace ATEMWeb.Classes
         private AtemHelper(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
-            Atem = new SixteenMedia.ATEM.Broker.Atem();
+            Atem = new Atem();
             Atem.Connected += Atem_Connected;
             Atem.MixEffectBlockConnectedEvent += Atem_MixEffectBlockConnectedEvent;
             Atem.DisconnectedEvent += Atem_Disconnected;
@@ -40,7 +37,7 @@ namespace ATEMWeb.Classes
 
         private void Atem_MixEffectBlockConnectedEvent(object sender, MixEffectBlockConnectedEventArgs e)
         {
-            e.ConnectedMEBlock.ProgramInputChanged += ConnectedMEBlock_ProgramInputChanged;
+           e.ConnectedMEBlock.ProgramInputChanged += ConnectedMEBlock_ProgramInputChanged;
             e.ConnectedMEBlock.PreviewInputChanged += ConnectedMEBlock_PreviewInputChanged;
             e.ConnectedMEBlock.InTransitionChanged += ConnectedMEBlock_InTransitionChanged;
             e.ConnectedMEBlock.TransitionFramesRemainingChanged += ConnectedMEBlock_TransitionFramesRemainingChanged;
