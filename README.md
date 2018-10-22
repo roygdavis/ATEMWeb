@@ -20,14 +20,14 @@ http://host:port/index.html will provide simple web page showing the ATEM events
 http://host:port/api/atem/mixeffects
 This will return all the M/E banks you have. The zero-based index number returned will be required in the following calls (or, just use zero if you only have the 1 ME)
 
-http://host:port/api/atem/mixeffects/{me_id}/pgm_id
-Returns the current pgm_id (actually returns the entire state for the specified me_id)
+http://host:port/api/atem/mixeffects/{me_id}/pgm
+Returns the current input id for the PGM bus on the specified me_id (actually returns the entire state for the specified me_id)
 
 http://host:port/api/atem/mixeffects/{meId}/pgm/{pgm_id}
 Change the PGM output for the specified {me_id) to the input number specified by pgm_id. me_id is usually zero, unless you have a 2M/E ATEM and want to change the PGM output of the 2nd one, in which case it'll be a one (obvs)
 
 http://host:port/api/atem/mixeffects/{me_id}/pvw
-Returns the pvw_id (and entire state of the specified me_id)
+Returns the input id of the PVW bus on the specified me_id (and entire state of the specified me_id)
 
 http://host:port/api/atem/mixeffects/{me_id}/pvw/{pvw_id}
 Change the PVW output for the {me_id) to the input number specified by pvw_id. me_id is usually zero, unless you have a 2M/E ATEM and want to change the PVW output of the 2nd one, in which case it'll be a one (obvs)
