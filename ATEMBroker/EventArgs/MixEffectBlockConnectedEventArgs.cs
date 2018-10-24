@@ -1,5 +1,4 @@
 ﻿using System;
-using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 
 namespace SixteenMedia.ATEM.Wrapper
 {

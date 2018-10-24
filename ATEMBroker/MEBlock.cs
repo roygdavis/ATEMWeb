@@ -49,7 +49,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetProgramInput(out long v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             set
             {
@@ -59,7 +59,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 else
                 {
-                    throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                    throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetPreviewInput(out long v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             set
             {
@@ -84,7 +84,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 else
                 {
-                    throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                    throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetPreviewLive(out int v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -115,7 +115,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetPreviewTransition(out int v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             set
             {
@@ -125,7 +125,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 else
                 {
-                    throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                    throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
                 }
             }
         }
@@ -140,7 +140,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetInTransition(out int v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -157,7 +157,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetTransitionPosition(out double v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             set
             {
@@ -167,7 +167,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 else
                 {
-                    throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                    throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
                 }
             }
         }
@@ -182,7 +182,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetTransitionFramesRemaining(out uint v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -199,7 +199,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetFadeToBlackRate(out uint v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             set
             {
@@ -209,7 +209,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 else
                 {
-                    throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                    throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
                 }
             }
         }
@@ -224,7 +224,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetFadeToBlackFramesRemaining(out uint v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -241,7 +241,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetFadeToBlackFullyBlack(out int v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             set
             {
@@ -251,7 +251,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 }
                 else
                 {
-                    throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                    throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
                 }
             }
         }
@@ -266,7 +266,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetInFadeToBlack(out int v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -283,7 +283,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetFadeToBlackInTransition(out int v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -300,7 +300,7 @@ namespace SixteenMedia.ATEM.Wrapper
                     MEBlockContext.GetInputAvailabilityMask(out _BMDSwitcherInputAvailability v);
                     return v;
                 }
-                throw new NullReferenceException("Mix Effect Block has been de-referenced/nullified");
+                throw new MixEffectsNullException("Mix Effect Block has been de-referenced/nullified");
             }
             // empty setter so that this property can be serialised
             set { }
@@ -318,7 +318,6 @@ namespace SixteenMedia.ATEM.Wrapper
         public event EventHandler<MixEffectsEventArgs> FadeToBlackFramesRemainingChanged;
         public event EventHandler<MixEffectsEventArgs> PreviewLiveChanged;
         public event EventHandler<MixEffectsEventArgs> PreviewTransitionChanged;
-        public event EventHandler<MixEffectsEventArgs> AvailabilityMaskChanged;
         public event EventHandler<MixEffectsEventArgs> FadeToBlackRateChanged;
         public event EventHandler<MixEffectsEventArgs> FadeToBlackFullyBlackChanged;
         public event EventHandler<MixEffectsEventArgs> FadeToBlackInTransitionChanged;
@@ -336,18 +335,20 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.PGMChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewInputChanged:
                     PreviewInputChanged?.Invoke(this, new MixEffectsEventArgs()
                     {
-                        Input = ProgramInput,
+                        Input = PreviewInput,
                         InTransition = InTransition,
                         MEBus = MEBuses.Preview,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.PVWChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeTransitionPositionChanged:
@@ -358,7 +359,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.TransitionPositionChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeTransitionFramesRemainingChanged:
@@ -369,7 +371,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.TransitionFramesRemainingChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInTransitionChanged:
@@ -380,7 +383,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.InTransitionChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackFramesRemainingChanged:
@@ -391,7 +395,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.FadeToBlackFramesRemainingChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInFadeToBlackChanged:
@@ -402,7 +407,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.InFadeToBlackChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewLiveChanged:
@@ -413,7 +419,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Preview,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.PreviewLiveChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypePreviewTransitionChanged:
@@ -424,7 +431,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Preview,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.PreviewTransitionChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeInputAvailabilityMaskChanged:
@@ -435,7 +443,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.None,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.InputAvailabilityMaskChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackRateChanged:
@@ -446,7 +455,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.None,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.FadeToBlackRateChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackFullyBlackChanged:
@@ -457,7 +467,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.FadeToBlackFullyBlackChanged
                     });
                     break;
                 case _BMDSwitcherMixEffectBlockEventType.bmdSwitcherMixEffectBlockEventTypeFadeToBlackInTransitionChanged:
@@ -468,7 +479,8 @@ namespace SixteenMedia.ATEM.Wrapper
                         MEBus = MEBuses.Program,
                         TransitionFramesRemaining = TransitionFramesRemaining,
                         TransitionPosition = TransitionPosition,
-                        MixEffectsIndex = this.MEBlockIndex
+                        MixEffectsIndex = this.MEBlockIndex,
+                        MixEffectsEventType = AtemMixEffectsEventTypes.FadeToBlackInTransitionChanged
                     });
                     break;
                 default:

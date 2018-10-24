@@ -59,9 +59,9 @@
             }
 
             // Add a client-side hub method that the server will call
-            ticker.client.notifyAtemPGMEvent = function (pgm) {
+            ticker.client.notifyAtemMixEffectsEvent = function (pgm) {
 
-                $("#atem_events_list").append('<ul>' + pgm + '</ul>');
+                $("#atem_events_list").append('<ul>' + JSON.stringify(pgm) + '</ul>');
             }
 
             // Start the connection

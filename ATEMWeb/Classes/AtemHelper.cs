@@ -42,7 +42,6 @@ namespace ATEMWeb.Classes
             e.ConnectedMEBlock.InTransitionChanged += ConnectedMEBlock_InTransitionChanged;
             e.ConnectedMEBlock.TransitionFramesRemainingChanged += ConnectedMEBlock_TransitionFramesRemainingChanged;
             e.ConnectedMEBlock.TransitionPositionChanged += ConnectedMEBlock_TransitionPositionChanged;
-            e.ConnectedMEBlock.AvailabilityMaskChanged += ConnectedMEBlock_AvailabilityMaskChanged;
             e.ConnectedMEBlock.FadeToBlackFramesRemainingChanged += ConnectedMEBlock_FadeToBlackFramesRemainingChanged;
             e.ConnectedMEBlock.FadeToBlackFullyBlackChanged += ConnectedMEBlock_FadeToBlackFullyBlackChanged;
             e.ConnectedMEBlock.FadeToBlackInTransitionChanged += ConnectedMEBlock_FadeToBlackInTransitionChanged;
@@ -55,82 +54,118 @@ namespace ATEMWeb.Classes
 
         private void ConnectedMEBlock_PreviewTransitionChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new 
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_PreviewLiveChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_InputAvailabilityMaskChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_InFadeToBlackChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_FadeToBlackRateChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_FadeToBlackInTransitionChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_FadeToBlackFullyBlackChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_FadeToBlackFramesRemainingChanged(object sender, MixEffectsEventArgs e)
         {
-            throw new NotImplementedException();
-        }
-
-        private void ConnectedMEBlock_AvailabilityMaskChanged(object sender, MixEffectsEventArgs e)
-        {
-            throw new NotImplementedException();
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_TransitionPositionChanged(object sender, MixEffectsEventArgs e)
         {
-            Clients.All.notifyAtemPVWEvent(string.Format("Transition position: {0}", e.TransitionPosition));
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_TransitionFramesRemainingChanged(object sender, MixEffectsEventArgs e)
         {
-            Clients.All.notifyAtemPVWEvent(string.Format("Transition frames remaining: {0}", e.TransitionFramesRemaining));
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_InTransitionChanged(object sender, MixEffectsEventArgs e)
         {
-            Clients.All.notifyAtemPVWEvent(string.Format("In Transition: {0}", e.InTransition));
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_PreviewInputChanged(object sender, MixEffectsEventArgs e)
         {
-            Clients.All.notifyAtemPVWEvent(string.Format("PVW Changed: {0}", e.Input));
+            // Clients.All.notifyAtemPVWEvent(string.Format("PVW Changed: {0}", e.Input));
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void ConnectedMEBlock_ProgramInputChanged(object sender, MixEffectsEventArgs e)
         {
-            Clients.All.notifyAtemPGMEvent(string.Format("PGM Changed: {0}", e.Input));
+            // Clients.All.notifyAtemMixEffectsEvent(string.Format("PGM Changed: {0}", e.Input));
+            Clients.All.notifyAtemMixEffectsEvent(new
+            {
+                MixEffects = e
+            });
         }
 
         private void Atem_Disconnected(object sender, EventArgs e)
         {
-            Clients.All.notifyAtemConEvent("ATEM Disconnected");
+            Clients.All.notifyAtemEvent("ATEM Disconnected");
         }
 
         private void Atem_Connected(object sender, EventArgs e)
         {
-            Clients.All.notifyAtemConEvent("ATEM Connected");
+            Clients.All.notifyAtemEvent("ATEM Connected");
         }
     }
 }

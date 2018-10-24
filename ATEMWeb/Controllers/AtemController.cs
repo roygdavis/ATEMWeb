@@ -17,7 +17,7 @@ namespace ATEMWeb.Controllers
             {
                 return AtemHelper.Instance.Atem;
             }
-            catch (Exception e)
+            catch 
             {
                 return SixteenMedia.ATEM.Wrapper.Atem.Null;
             }

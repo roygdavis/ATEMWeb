@@ -207,10 +207,7 @@ namespace SixteenMedia.ATEM.Wrapper
                 {
                     MEBlock[] oldMEArray = m_mixEffectBlocks;
                     m_mixEffectBlocks = new MEBlock[meCount];
-                    for (int i = 0; i < meCount; i++)
-                    {
-                        m_mixEffectBlocks[i] = oldMEArray[i];
-                    }
+                    oldMEArray.CopyTo(m_mixEffectBlocks, 0);
                     m_mixEffectBlocks[meCount] = new MEBlock(meBlock, meCount);
                 }
 
