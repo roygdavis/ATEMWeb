@@ -48,15 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Atem.cs" />
-    <Compile Include="Enums\AtemEnums.cs" />
     <Compile Include="AtemState.cs" />
-    <Compile Include="Enums\AtemEventTypes.cs" />
     <Compile Include="Enums\AtemMixEffectsEventTypes.cs" />
     <Compile Include="Enums\MEBuses.cs" />
     <Compile Include="EventArgs\MixEffectsEventArgs.cs" />
     <Compile Include="Exceptions\ConnectFailureIncompatibleFirmwareException.cs" />
     <Compile Include="Exceptions\ConnectFailureNoResponseException.cs" />
     <Compile Include="Exceptions\MixEffectsIsNullException.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="MEBlock.cs" />
     <Compile Include="EventArgs\MixEffectBlockConnectedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
