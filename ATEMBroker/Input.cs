@@ -85,14 +85,40 @@ namespace SixteenMedia.ATEM.Wrapper
             }
         }
 
-        void ResetNames();
+        public void ResetNames()
+        {
+            m_switcherInput.ResetNames();
+        }
         
-        void GetAvailableExternalPortTypes(out _BMDSwitcherExternalPortType types);
-        void SetCurrentExternalPortType(_BMDSwitcherExternalPortType value);
-        void GetCurrentExternalPortType(out _BMDSwitcherExternalPortType value);
-        void GetInputId(out long inputId);
-        void AddCallback(IBMDSwitcherInputCallback callback);
-        void RemoveCallback(IBMDSwitcherInputCallback callback);
+        public void GetAvailableExternalPortTypes(out _BMDSwitcherExternalPortType types)
+        {
+            m_switcherInput.GetAvailableExternalPortTypes(out types);
+        }
+
+        public void SetCurrentExternalPortType(_BMDSwitcherExternalPortType value)
+        {
+            m_switcherInput.SetCurrentExternalPortType(value);
+        }
+
+        public void GetCurrentExternalPortType(out _BMDSwitcherExternalPortType value)
+        {
+            m_switcherInput.GetCurrentExternalPortType(out value);
+        }
+
+        public void GetInputId(out long inputId)
+        {
+            m_switcherInput.GetInputId(out inputId);
+        }
+
+        public void AddCallback(IBMDSwitcherInputCallback callback)
+        {
+            m_switcherInput.AddCallback(callback);
+        }
+
+        public void RemoveCallback(IBMDSwitcherInputCallback callback)
+        {
+            m_switcherInput.RemoveCallback(callback);
+        }
 
         public void Notify(_BMDSwitcherInputEventType eventType)
         {
