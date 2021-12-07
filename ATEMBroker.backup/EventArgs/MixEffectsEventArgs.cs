@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ATEM.Wrapper
+namespace SixteenMedia.ATEM.Wrapper
 {
     [DataContract]
     public class MixEffectsEventArgs : EventArgs

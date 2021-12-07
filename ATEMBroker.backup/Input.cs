@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BMDSwitcherAPI;
+using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 
-namespace ATEM.Wrapper
+namespace SixteenMedia.ATEM.Wrapper
 {
     public class Input : IBMDSwitcherInputCallback
     {
@@ -85,14 +85,14 @@ namespace ATEM.Wrapper
             }
         }
 
-        delegate void ResetNames();
-
-        delegate void GetAvailableExternalPortTypes(out _BMDSwitcherExternalPortType types);
-        delegate void SetCurrentExternalPortType(_BMDSwitcherExternalPortType value);
-        delegate void GetCurrentExternalPortType(out _BMDSwitcherExternalPortType value);
-        delegate void GetInputId(out long inputId);
-        delegate void AddCallback(IBMDSwitcherInputCallback callback);
-        delegate void RemoveCallback(IBMDSwitcherInputCallback callback);
+        void ResetNames();
+        
+        void GetAvailableExternalPortTypes(out _BMDSwitcherExternalPortType types);
+        void SetCurrentExternalPortType(_BMDSwitcherExternalPortType value);
+        void GetCurrentExternalPortType(out _BMDSwitcherExternalPortType value);
+        void GetInputId(out long inputId);
+        void AddCallback(IBMDSwitcherInputCallback callback);
+        void RemoveCallback(IBMDSwitcherInputCallback callback);
 
         public void Notify(_BMDSwitcherInputEventType eventType)
         {

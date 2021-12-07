@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATEM.Wrapper
+namespace SixteenMedia.ATEM.Wrapper
 {
     /// <summary>
     /// TODO: Provides a read-only state of the current Atem

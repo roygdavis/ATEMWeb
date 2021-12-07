@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATEM.Wrapper
+namespace SixteenMedia.ATEM.Wrapper
 {
     [DataContract]
     public enum AtemMixEffectsEventTypes

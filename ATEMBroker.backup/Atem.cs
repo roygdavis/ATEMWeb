@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 using System.Runtime.InteropServices;
 using System.Configuration;
 using System.Runtime.Serialization;
-using BMDSwitcherAPI;
 
-namespace ATEM.Wrapper
+namespace SixteenMedia.ATEM.Wrapper
 {
     [DataContract]
     public class Atem : IBMDSwitcherCallback,

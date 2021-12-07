@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using BMDSwitcherAPI;
+using SixteenMedia.ATEM.Broker.BMDSwitcherAPI;
 
-namespace ATEM.Wrapper
+namespace SixteenMedia.ATEM.Wrapper
 {
     /// <summary>
     /// Helper class to expose BMD ME block methods from Get/Set methods to .Net properties
