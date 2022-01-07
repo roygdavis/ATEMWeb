@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 using System.Configuration;
 using System.Runtime.Serialization;
 using BMDSwitcherAPI;
+using ATEM.Services.Interfaces;
 
-namespace ATEM.Wrapper
+namespace ATEM.Services
 {
     [DataContract]
-    public class Atem : IBMDSwitcherCallback,
-        IDisposable
+    public class AtemService :  IAtem
     {
         #region private fields
         /// <summary>
@@ -28,36 +28,29 @@ namespace ATEM.Wrapper
         /// <summary>
         /// An array containing the ME Block objects
         /// </summary>
-        private MEBlock[] m_mixEffectBlocks;
+        //private MixEffectBlock[] m_mixEffectBlocks;
         #endregion
 
         #region Public properties
         [DataMember]
-        public List<MEBlock> MixEffectsBlocks
-        {
-            get
-            {
-                if (m_mixEffectBlocks != null)
-                {
-                    return m_mixEffectBlocks.ToList();
-                }
-                else
-                {
-                    return new List<MEBlock>();
-                }
-            }
-        }
+        public List<IMixEffectBlock> MixEffectsBlocks { get; set; }
+        //{
+        //    get
+        //    {
+        //        return m_mixEffectBlocks != null ? m_mixEffectBlocks.ToList() : new List<MixEffectBlock>();
+        //    }
+        //}
 
         [DataMember]
         public string AtemIPAddress { get; set; }
 
-        public static Atem Null => new Atem();
+        //public static Atem Null => new Atem();
         #endregion
 
         #region Constructors
-        public Atem()
+        public AtemService()
         {
-            
+            MixEffectsBlocks = new List<IMixEffectBlock>();
             //m_mixEffectBlockMonitor = new MixEffectBlockMonitor();
             //m_mixEffectBlockMonitor.ProgramInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
             //m_mixEffectBlockMonitor.PreviewInputChanged += new SwitcherEventHandler((s, a) => OnProgramInputChanged());
@@ -88,14 +81,18 @@ namespace ATEM.Wrapper
         /// Called when the Atem is disconnected successfully
         /// </summary>
         public event EventHandler<EventArgs> DisconnectedEvent;
-
         public event EventHandler<EventArgs> VideoModeChangedEvent;
         public event EventHandler<EventArgs> MethodForDownConvertedSDChangedEvent;
         public event EventHandler<EventArgs> DownConvertedHDVideoModeChangedEvent;
         public event EventHandler<EventArgs> MultiViewVideoModeChangedEvent;
-        public event EventHandler<EventArgs> PowerStatusChangedEvent;
-        
+        public event EventHandler<EventArgs> PowerStatusChangedEvent;        
         public event EventHandler<EventArgs> SDI3GOutputLevelChangedEvent;
+        public event EventHandler<EventArgs> TypeAutoVideoModeChanged;
+        public event EventHandler<EventArgs> AutoVideoModeDetectedChanged;
+        public event EventHandler<EventArgs> SuperSourceCascadeChanged;
+        public event EventHandler<EventArgs> TimeCodeChanged;
+        public event EventHandler<EventArgs> TimeCodeLockedChanged;
+        public event EventHandler<EventArgs> TimeCodeModeChanged;
 
         public void Notify(_BMDSwitcherEventType eventType, _BMDSwitcherVideoMode coreVideoMode)
         {
@@ -122,6 +119,24 @@ namespace ATEM.Wrapper
                 case _BMDSwitcherEventType.bmdSwitcherEventType3GSDIOutputLevelChanged:
                     SDI3GOutputLevelChangedEvent?.Invoke(this, new EventArgs());
                     break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeAutoVideoModeChanged:
+                    TypeAutoVideoModeChanged?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeAutoVideoModeDetectedChanged:
+                    AutoVideoModeDetectedChanged?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeSuperSourceCascadeChanged:
+                    SuperSourceCascadeChanged?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeChanged:
+                    TimeCodeChanged?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeLockedChanged:
+                    TimeCodeLockedChanged?.Invoke(this, new EventArgs());
+                    break;
+                case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeModeChanged:
+                    TimeCodeModeChanged?.Invoke(this, new EventArgs());
+                    break;
                 default:
                     break;
             }
@@ -146,19 +161,18 @@ namespace ATEM.Wrapper
 
         private void nullifyMixEffectsBlocks()
         {
-            if (m_mixEffectBlocks != null)
+            if (MixEffectsBlocks != null && MixEffectsBlocks.Any())
             {
-                for (int i = 0; i < m_mixEffectBlocks.Length; i++)
+                foreach (var meBlock in MixEffectsBlocks)
                 {
-                    if (m_mixEffectBlocks[i] != null)
+                    if (meBlock != null)
                     {
                         // Dispose reference
-                        m_mixEffectBlocks[i].Dispose();
+                        meBlock.Dispose();
                     }
                 }
-
-                m_mixEffectBlocks = null;
             }
+            MixEffectsBlocks = new List<IMixEffectBlock>();
         }
 
         /// <summary>
@@ -169,8 +183,8 @@ namespace ATEM.Wrapper
             // ensure m_mixEffectBlocks is empty
             nullifyMixEffectsBlocks();
 
-            // init the mix effects count, this is a zero-based count so we start at -1
-            int meCount = -1;
+            // init the mix effects count
+            int meCount = 0;
 
             // meIteratorIID holds the COM class GUID of the iterator
             Guid meIteratorIID = typeof(IBMDSwitcherMixEffectBlockIterator).GUID;
@@ -193,30 +207,18 @@ namespace ATEM.Wrapper
             // if that wasn't null then add to our array of ME Blocks
             while (meBlock != null)
             {
-                // We're not null, we increment our Mix Effect count!
-                meCount++;
-
-                // is this the first ME Block?
-                if (meCount == 0)
-                {
-                    // Yes, so we init our ME Block array with just one item
-                    m_mixEffectBlocks = new MEBlock[1];
-                    m_mixEffectBlocks[0] = new MEBlock(meBlock, meCount);
-                }
-                else // otherwise we re-create our ME Block array and increase size by one!
-                {
-                    MEBlock[] oldMEArray = m_mixEffectBlocks;
-                    m_mixEffectBlocks = new MEBlock[meCount];
-                    oldMEArray.CopyTo(m_mixEffectBlocks, 0);
-                    m_mixEffectBlocks[meCount] = new MEBlock(meBlock, meCount);
-                }
+                var mixEffectBlock = new MixEffectBlock(meBlock, meCount);
+                MixEffectsBlocks.Add(mixEffectBlock);
 
                 // raise an event
                 // the consumer of this event should hook into the mbBlock events
-                MixEffectBlockConnectedEvent?.Invoke(this, new MixEffectBlockConnectedEventArgs(m_mixEffectBlocks[meCount]));
+                MixEffectBlockConnectedEvent?.Invoke(this, new MixEffectBlockConnectedEventArgs(mixEffectBlock));
 
                 // Try and get the next block.  A ref of null means there are no more Mix Effects Blocks on this ATEM
                 meIterator.Next(out meBlock);
+
+                // We increment our Mix Effect count!
+                meCount++;
             }
         }
 

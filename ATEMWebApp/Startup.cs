@@ -1,11 +1,13 @@
+using ATEM.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AtemWEBCore
+namespace ATEMWebApp
 {
     public class Startup
     {
@@ -21,9 +23,8 @@ namespace AtemWEBCore
         {
 
             services.AddControllersWithViews();
-            //services.AddSignalR();
 
-            //services.AddSingleton<AtemService>(provider=>new AtemService());
+            services.AddSingleton<AtemService>(provider => new AtemService());
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -56,9 +57,7 @@ namespace AtemWEBCore
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller}/{action=Index}/{id?}");
-
-                //endpoints.MapHub<AtemHub>("/hub");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>

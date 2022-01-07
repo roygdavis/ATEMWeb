@@ -3,7 +3,7 @@ using System.Configuration;
 using ATEMWeb.Hubs;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using SixteenMedia.ATEM.Wrapper;
+using ATEM.Services;
 
 namespace ATEMWeb.Classes
 {
@@ -14,7 +14,7 @@ namespace ATEMWeb.Classes
 
         public static AtemHelper Instance => _instance.Value;
 
-        public Atem Atem { get; private set; }
+        public AtemService Atem { get; private set; }
         public string PGM { get; internal set; }
 
         public IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<ATEMEventsHub>();
@@ -28,7 +28,7 @@ namespace ATEMWeb.Classes
         private AtemHelper(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
-            Atem = new Atem();
+            Atem = new AtemService();
             Atem.Connected += Atem_Connected;
             Atem.MixEffectBlockConnectedEvent += Atem_MixEffectBlockConnectedEvent;
             Atem.DisconnectedEvent += Atem_Disconnected;

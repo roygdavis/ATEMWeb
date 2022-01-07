@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>ATEM.Wrapper</RootNamespace>
+    <RootNamespace>ATEM.Services</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>ATEM.Wrapper</AssemblyName>
+    <AssemblyName>ATEM.Services</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BMDSwitcherAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -27,5 +27,8 @@
     <None Update="BMDLibs\Readme.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>

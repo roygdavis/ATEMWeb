@@ -308,9 +308,9 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ATEMBroker\ATEMWrapper.csproj">
+    <ProjectReference Include="..\ATEMBroker\ATEM.Services.csproj">
       <Project>{21f12570-1b07-4f80-a78d-ea3cb5c6dd41}</Project>
-      <Name>ATEMWrapper</Name>
+      <Name>ATEM.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

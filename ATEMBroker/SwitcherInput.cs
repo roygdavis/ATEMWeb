@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using BMDSwitcherAPI;
 
-namespace ATEM.Wrapper
+namespace ATEM.Services
 {
-    public class Input : IBMDSwitcherInputCallback
+    public class SwitcherInput : IBMDSwitcherInputCallback
     {
         private IBMDSwitcherInput m_switcherInput;
 

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATEM.Wrapper
+namespace ATEM.Services
 {
     [DataContract]
     public enum AtemMixEffectsEventTypes

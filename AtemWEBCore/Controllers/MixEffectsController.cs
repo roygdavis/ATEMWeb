@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ATEMWeb.Classes;
+﻿using System.Collections.Generic;
 using ATEM.Services.Interfaces;
+using ATEM.Services;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ATEMWeb.Controllers
+namespace AtemWEBCore.Controllers
 {
-
-    public class MixEffectsController : ApiController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MixEffectsController : ControllerBase
     {
+        private readonly AtemService _atem;
+
+        public MixEffectsController(AtemService atem)
+        {
+            _atem = atem;
+        }
+
+
         [Route("api/atem/mixeffects")]
         public IEnumerable<IMixEffectBlock> Get()
         {
-            return AtemHelper.Instance.Atem.MixEffectsBlocks;
+            return _atem.MixEffectsBlocks;
         }
 
         [Route("api/atem/mixeffects/{meId}/pgm")]
@@ -26,7 +31,7 @@ namespace ATEMWeb.Controllers
             // TODO: check meId is not out of bounds
             // TODO: check pgmId is valid
 
-            IMixEffectBlock instance = AtemHelper.Instance.Atem.MixEffectsBlocks[meId];
+            IMixEffectBlock instance = _atem.MixEffectsBlocks[meId];
             if (pgmId != -1) { instance.ProgramInput = pgmId; }
             return instance;
         }
@@ -39,7 +44,7 @@ namespace ATEMWeb.Controllers
             // TODO: check meId is not out of bounds
             // TODO: check pgmId is valid
 
-            IMixEffectBlock instance = AtemHelper.Instance.Atem.MixEffectsBlocks[meId];
+            IMixEffectBlock instance = _atem.MixEffectsBlocks[meId];
             if (pvwId != -1) { instance.PreviewInput = pvwId; }
             return instance;
         }

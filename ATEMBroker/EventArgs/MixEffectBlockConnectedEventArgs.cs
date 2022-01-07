@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace ATEM.Wrapper
+namespace ATEM.Services
 {
     public class MixEffectBlockConnectedEventArgs:EventArgs
     {
-        public MEBlock ConnectedMEBlock { get; set; }
+        public MixEffectBlock ConnectedMEBlock { get; set; }
 
-        public MixEffectBlockConnectedEventArgs(MEBlock connectedMEBlock)
+        public MixEffectBlockConnectedEventArgs(MixEffectBlock connectedMEBlock)
         {
             ConnectedMEBlock = connectedMEBlock;
         }

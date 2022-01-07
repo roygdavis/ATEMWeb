@@ -1,4 +1,5 @@
-﻿using ATEMWeb.Classes;
+﻿using ATEM.Services.Interfaces;
+using ATEMWeb.Classes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,18 +12,16 @@ namespace ATEMWeb.Controllers
 {
     public class AtemController : ApiController
     {
-        public SixteenMedia.ATEM.Wrapper.Atem Get()
+        public IAtem Get()
         {
             try
             {
                 return AtemHelper.Instance.Atem;
             }
-            catch 
+            catch
             {
-                return SixteenMedia.ATEM.Wrapper.Atem.Null;
+                return null;
             }
         }
-
-
     }
 }

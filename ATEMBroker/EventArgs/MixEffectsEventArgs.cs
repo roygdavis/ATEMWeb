@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ATEM.Wrapper
+namespace ATEM.Services
 {
     [DataContract]
     public class MixEffectsEventArgs : EventArgs
@@ -10,7 +10,7 @@ namespace ATEM.Wrapper
         public long Input { get; set; }
 
         [DataMember]
-        public MEBuses MEBus { get; set; }
+        public MixEffectBuses MEBus { get; set; }
 
         [DataMember]
         public uint TransitionFramesRemaining { get; set; }

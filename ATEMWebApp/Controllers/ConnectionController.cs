@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AtemWEBCore.Controllers
+namespace ATEMWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
