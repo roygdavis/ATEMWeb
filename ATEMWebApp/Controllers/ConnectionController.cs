@@ -22,8 +22,8 @@ namespace ATEMWebApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet("connect/{address?}")]
-        public async Task<IActionResult> Connect(string address)
+        [HttpGet("connect")]
+        public async Task<IActionResult> Connect([FromQuery]string address)
         {
             _logger.LogInformation($"Attempting connection to {(string.IsNullOrEmpty(address) ? "USB-C" : address)}");
             try
