@@ -6,8 +6,8 @@ using System.Text;
 
 namespace ATEM.Services.Interfaces
 {
-    public interface IAtem : IDisposable, IBMDSwitcherCallback
-    {
+    public interface IAtemService 
+    { 
         List<IMixEffectBlock> MixEffectsBlocks { get; set; }
         string AtemIPAddress { get; set; }
         _BMDSwitcherVideoMode VideoMode { get; set; }

@@ -12,7 +12,7 @@ using ATEM.Services.Interfaces;
 namespace ATEM.Services
 {
     [DataContract]
-    public class AtemService :  IAtem
+    public class AtemInstance : IDisposable, IBMDSwitcherCallback
     {
         #region private fields
         /// <summary>
@@ -48,7 +48,7 @@ namespace ATEM.Services
         #endregion
 
         #region Constructors
-        public AtemService()
+        public AtemInstance()
         {
             MixEffectsBlocks = new List<IMixEffectBlock>();
             //m_mixEffectBlockMonitor = new MixEffectBlockMonitor();

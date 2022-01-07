@@ -12,9 +12,9 @@ namespace ATEMWebApp.Controllers
     [ApiController]
     public class ConnectionController : ControllerBase
     {
-        private readonly AtemService _atem;
+        private readonly AtemInstance _atem;
 
-        public ConnectionController(AtemService atem)
+        public ConnectionController(AtemInstance atem)
         {
             _atem = atem;
         }

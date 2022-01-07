@@ -26,9 +26,9 @@ namespace ATEMWebApp
 
             services.AddControllersWithViews();
 
-            //services.AddSignalRCore();
+            services.AddSignalRCore();
 
-            //services.AddSingleton<AtemService>(provider => new AtemService());
+            services.AddSingleton<AtemInstance>(provider => new AtemInstance());
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

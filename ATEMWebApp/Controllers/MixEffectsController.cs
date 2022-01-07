@@ -12,10 +12,10 @@ namespace ATEMWebApp.Controllers
     [ApiController]
     public class MixEffectsController : ControllerBase
     {
-        private readonly AtemService _atem;
+        private readonly AtemInstance _atem;
         private readonly IHubContext<ATEMEventsHub> _hub;
 
-        public MixEffectsController(AtemService atem, IHubContext<ATEMEventsHub> hub)
+        public MixEffectsController(AtemInstance atem, IHubContext<ATEMEventsHub> hub)
         {
             _atem = atem;
             _hub = hub;

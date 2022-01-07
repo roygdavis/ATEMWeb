@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ATEM.Services.Services
 {
-    public class FooAtemService //: IAtemService
+    public class AtemService : IAtemService
     {
         public List<IMixEffectBlock> MixEffectsBlocks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string AtemIPAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

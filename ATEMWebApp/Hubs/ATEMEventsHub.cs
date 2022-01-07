@@ -8,12 +8,12 @@ namespace ATEMWebApp.Hubs
 {
     public class ATEMEventsHub : Hub
     {
-        private readonly AtemService _atem;
+        private readonly AtemInstance _atem;
 
         //public ATEMEventsHub() : this(_atem.Instance)
         //{ }
 
-        public ATEMEventsHub(AtemService atem)
+        public ATEMEventsHub(AtemInstance atem)
         {
             _atem = atem;
         }
