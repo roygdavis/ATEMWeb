@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ATEMWebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/atem")]
     [ApiController]
     public class MixEffectsController : ControllerBase
     {
@@ -22,15 +22,14 @@ namespace ATEMWebApp.Controllers
         }
 
 
-        [Route("api/atem/mixeffects")]
+        [HttpGet("mixeffects")]
         public IEnumerable<IMixEffectBlock> Get()
         {
             return _atem.MixEffectsBlocks;
         }
 
-        [Route("api/atem/mixeffects/{meId}/pgm")]
-        [Route("api/atem/mixeffects/{meId}/pgm/{pgmId}")]
-        [HttpGet]
+        [HttpGet("mixeffects/{meId}/pgm")]
+        [HttpGet("mixeffects/{meId}/pgm/{pgmId}")]
         public async Task<IMixEffectBlock> PGM(int meId, int pgmId = -1)
         {
             // TODO: check meId is not out of bounds
@@ -42,9 +41,8 @@ namespace ATEMWebApp.Controllers
             return instance;
         }
 
-        [Route("api/atem/mixeffects/{meId}/pvw")]
-        [Route("api/atem/mixeffects/{meId}/pvw/{pvwId}")]
-        [HttpGet]
+        [HttpGet("mixeffects/{meId}/pvw")]
+        [HttpGet("mixeffects/{meId}/pvw/{pvwId}")]
         public IMixEffectBlock PVW(int meId, int pvwId = -1)
         {
             // TODO: check meId is not out of bounds

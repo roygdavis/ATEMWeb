@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.OpenApi.Models;
 
 namespace ATEMWebApp
 {
@@ -34,6 +35,11 @@ namespace ATEMWebApp
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
         }
 
@@ -62,7 +68,14 @@ namespace ATEMWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-               // endpoints.MapHub<ATEMEventsHub>("/events");
+                // endpoints.MapHub<ATEMEventsHub>("/events");
+                endpoints.MapSwagger();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "My API V1");
             });
 
             app.UseSpa(spa =>
