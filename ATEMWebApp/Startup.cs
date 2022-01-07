@@ -1,4 +1,5 @@
 using ATEM.Services;
+using ATEMWebApp.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ATEMWebApp
 {
@@ -24,7 +26,9 @@ namespace ATEMWebApp
 
             services.AddControllersWithViews();
 
-            services.AddSingleton<AtemService>(provider => new AtemService());
+            //services.AddSignalRCore();
+
+            //services.AddSingleton<AtemService>(provider => new AtemService());
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -58,6 +62,7 @@ namespace ATEMWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+               // endpoints.MapHub<ATEMEventsHub>("/events");
             });
 
             app.UseSpa(spa =>
