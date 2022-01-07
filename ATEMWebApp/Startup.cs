@@ -27,7 +27,7 @@ namespace ATEMWebApp
 
             services.AddControllersWithViews();
 
-            services.AddSignalRCore();
+            services.AddSignalR();
 
             services.AddSingleton<AtemInstance>(provider => new AtemInstance());
 
@@ -68,7 +68,7 @@ namespace ATEMWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-                // endpoints.MapHub<ATEMEventsHub>("/events");
+                endpoints.MapHub<ATEMEventsHub>("/events");
                 endpoints.MapSwagger();
             });
 
