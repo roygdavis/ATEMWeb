@@ -38,6 +38,7 @@ namespace ATEMWebApp.Controllers
         public async Task PGM(int meId = 0, int pgmId = 1)
         {
             await _atem.SetPgmInput(meId, pgmId);
+            await _hub.Clients.All.SendAsync("updated", pgmId);
         }
 
         [HttpPost("mixeffects/{meId}/pvw/{pvwId}")]
