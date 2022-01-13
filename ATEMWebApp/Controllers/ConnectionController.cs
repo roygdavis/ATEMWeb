@@ -1,4 +1,5 @@
 ﻿using ATEM.Services;
+using ATEM.Services.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace ATEMWebApp.Controllers
 {
-    [Route("api/atem")]
+    [Route("atem")]
     [ApiController]
     public class ConnectionController : ControllerBase
     {
-        private readonly AtemInstance _atem;
+        private readonly IAtemService _atem;
         private ILogger<ConnectionController> _logger;
 
-        public ConnectionController(AtemInstance atem, ILogger<ConnectionController> logger)
+        public ConnectionController(IAtemService atem, ILogger<ConnectionController> logger)
         {
             _atem = atem;
             _logger = logger;

@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
+using ATEM.Services.Services;
+using ATEM.Services.Hosts;
 
 namespace ATEMWebApp
 {
@@ -29,7 +31,8 @@ namespace ATEMWebApp
 
             services.AddSignalR();
 
-            services.AddSingleton<AtemInstance>(provider => new AtemInstance());
+            services.AddSingleton<IAtemService, AtemService>();
+            services.AddSingleton<IAtemHost, AtemHost>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -66,8 +69,8 @@ namespace ATEMWebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    name: "api",
+                    pattern: "api/{controller}/{action=Index}/{id?}");
                 endpoints.MapHub<ATEMEventsHub>("/events");
                 endpoints.MapSwagger();
             });

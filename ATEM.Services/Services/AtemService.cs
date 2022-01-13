@@ -1,39 +1,73 @@
-﻿using ATEM.Services.Interfaces;
+﻿using ATEM.Services.Hosts;
+using ATEM.Services.Interfaces;
 using BMDSwitcherAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ATEM.Services.Services
 {
     public class AtemService : IAtemService
     {
-        public List<IMixEffectBlock> MixEffectsBlocks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string AtemIPAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public _BMDSwitcherVideoMode VideoMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string ProductName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public _BMDSwitcher3GSDIOutputLevel SDI3GOutputLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public _BMDSwitcherPowerStatus PowerStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly IAtemHost _atemHost;
 
-        public event EventHandler<MixEffectBlockConnectedEventArgs> MixEffectBlockConnectedEvent;
-        public event EventHandler<EventArgs> Connected;
-        public event EventHandler<EventArgs> DisconnectedEvent;
-        public event EventHandler<EventArgs> VideoModeChangedEvent;
-        public event EventHandler<EventArgs> MethodForDownConvertedSDChangedEvent;
-        public event EventHandler<EventArgs> DownConvertedHDVideoModeChangedEvent;
-        public event EventHandler<EventArgs> MultiViewVideoModeChangedEvent;
-        public event EventHandler<EventArgs> PowerStatusChangedEvent;
-        public event EventHandler<EventArgs> SDI3GOutputLevelChangedEvent;
-        public event EventHandler<EventArgs> TypeAutoVideoModeChanged;
-        public event EventHandler<EventArgs> AutoVideoModeDetectedChanged;
-        public event EventHandler<EventArgs> SuperSourceCascadeChanged;
-        public event EventHandler<EventArgs> TimeCodeChanged;
-        public event EventHandler<EventArgs> TimeCodeLockedChanged;
-        public event EventHandler<EventArgs> TimeCodeModeChanged;
+        public AtemService(IAtemHost atemHost)
+        {
+            _atemHost = atemHost;
+        }
 
         public void Connect(string address)
         {
-            throw new NotImplementedException();
+            if (_atemHost is null)
+                throw new ArgumentNullException("Atem Host is null");
+
+            _atemHost.Connect(address);
+        }
+
+        public Task<IMixEffectBlock> GetMeBlock(int meId)
+        {
+            if (_atemHost.HasMixEffectBlocks())
+            {
+                return Task.FromResult(_atemHost.MixEffectsBlocks[meId]);
+            }
+            else
+                throw new MixEffectsNullException();
+        }
+
+        public Task<IEnumerable<IMixEffectBlock>> GetMeBlocks()
+        {
+            if (_atemHost.HasMixEffectBlocks())
+            {
+                return Task.FromResult(_atemHost.MixEffectsBlocks.AsEnumerable());
+            }
+            else
+                throw new MixEffectsNullException();
+        }
+
+        public Task SetPgmInput(int meBlockIndex, long inputId)
+        {
+            var meBlock = GetMeBlockByIndex(meBlockIndex);
+            meBlock.ProgramInput = inputId;
+
+            return Task.CompletedTask;
+        }
+
+        public Task SetPvwInput(int meBlockIndex, long inputId)
+        {
+            var meBlock = GetMeBlockByIndex(meBlockIndex);
+            meBlock.PreviewInput = inputId;
+
+            return Task.CompletedTask;
+        }
+
+        private IMixEffectBlock GetMeBlockByIndex(int meBlockIndex)
+        {
+            if (!_atemHost.HasMixEffectBlocks())
+                throw new MixEffectsNullException();
+
+            return _atemHost.MixEffectsBlocks[meBlockIndex];
         }
     }
 }

@@ -1,26 +1,29 @@
 ﻿
 
 using ATEM.Services;
+using ATEM.Services.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ATEMWebApp.Hubs
 {
     public class ATEMEventsHub : Hub
     {
-        private readonly AtemInstance _atem;
+        private readonly IAtemService _atem;
 
         //public ATEMEventsHub() : this(_atem.Instance)
         //{ }
 
-        public ATEMEventsHub(AtemInstance atem)
+        public ATEMEventsHub(IAtemService atem)
         {
             _atem = atem;
         }
 
-        public string GetPGM()
+        public async Task<string> GetPGM()
         {
-            return _atem.MixEffectsBlocks.FirstOrDefault()?.ProgramInput.ToString() ?? string.Empty;
+            var meBlock = await _atem.GetMeBlock(0);
+            return meBlock?.ProgramInput.ToString() ?? string.Empty;
         }
     }
 }
