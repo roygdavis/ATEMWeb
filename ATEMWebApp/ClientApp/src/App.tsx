@@ -8,7 +8,6 @@ interface AppState {
   messages: string[];
 }
 
-
 export default class App extends Component<{},AppState> {
   static displayName = App.name;
 
