@@ -1,6 +1,8 @@
 ﻿using ATEM.Services.Hosts;
+using ATEM.Services.Hubs;
 using ATEM.Services.Interfaces;
 using BMDSwitcherAPI;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +14,24 @@ namespace ATEM.Services.Services
     public class AtemService : IAtemService
     {
         private readonly IAtemHost _atemHost;
+        private readonly IHubContext<ATEMEventsHub> _hub;
+        private readonly AtemServicesConfiguration _config;
 
-        public AtemService(IAtemHost atemHost)
+        public AtemService(IAtemHost atemHost, IHubContext<ATEMEventsHub> hub, AtemServicesConfiguration configuration)
         {
             _atemHost = atemHost;
+            _hub = hub;
+            _config = configuration;
         }
 
-        public void Connect(string address)
+        public async Task Connect(string address)
         {
             if (_atemHost is null)
                 throw new ArgumentNullException("Atem Host is null");
 
             _atemHost.Connect(address);
+            if (_config.EnableEvents)
+                await _hub.Clients.All.SendAsync("connected");
         }
 
         public Task<IMixEffectBlock> GetMeBlock(int meId)
@@ -46,12 +54,13 @@ namespace ATEM.Services.Services
                 throw new MixEffectsNullException();
         }
 
-        public Task SetPgmInput(int meBlockIndex, long inputId)
+        public async Task SetPgmInput(int meBlockIndex, long inputId)
         {
             var meBlock = GetMeBlockByIndex(meBlockIndex);
             meBlock.ProgramInput = inputId;
 
-            return Task.CompletedTask;
+            if (_config.EnableEvents)
+                await _hub.Clients.All.SendAsync("updated", inputId);
         }
 
         public Task SetPvwInput(int meBlockIndex, long inputId)

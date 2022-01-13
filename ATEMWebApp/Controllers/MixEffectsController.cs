@@ -2,8 +2,6 @@
 using ATEM.Services.Interfaces;
 using ATEM.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using ATEMWebApp.Hubs;
 using System.Threading.Tasks;
 using ATEM.Services.Services;
 
@@ -14,12 +12,10 @@ namespace ATEMWebApp.Controllers
     public class MixEffectsController : ControllerBase
     {
         private readonly IAtemService _atem;
-        private readonly IHubContext<ATEMEventsHub> _hub;
 
-        public MixEffectsController(IAtemService atem, IHubContext<ATEMEventsHub> hub)
+        public MixEffectsController(IAtemService atem)
         {
             _atem = atem;
-            _hub = hub;
         }
 
         [HttpGet("mixeffects")]
@@ -38,7 +34,6 @@ namespace ATEMWebApp.Controllers
         public async Task PGM(int meId = 0, int pgmId = 1)
         {
             await _atem.SetPgmInput(meId, pgmId);
-            await _hub.Clients.All.SendAsync("updated", pgmId);
         }
 
         [HttpPost("mixeffects/{meId}/pvw/{pvwId}")]

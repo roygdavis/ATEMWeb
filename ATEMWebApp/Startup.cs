@@ -1,5 +1,3 @@
-using ATEM.Services;
-using ATEMWebApp.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
 using ATEM.Services.Services;
 using ATEM.Services.Hosts;
+using ATEM.Services.Hubs;
 
 namespace ATEMWebApp
 {
@@ -33,6 +32,10 @@ namespace ATEMWebApp
 
             services.AddSingleton<IAtemService, AtemService>();
             services.AddSingleton<IAtemHost, AtemHost>();
+            services.AddSingleton<AtemServicesConfiguration>(new AtemServicesConfiguration
+            {
+                EnableEvents = true
+            });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

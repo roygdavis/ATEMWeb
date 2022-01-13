@@ -54,5 +54,8 @@ export default class App extends Component<{},AppState> {
     connection.on("updated", (pgmId: number) => {
       this.setState({ messages: [...this.state.messages, pgmId.toString()] });
     });
+    connection.on("connected", (pgmId: number) => {
+      this.setState({ messages: [...this.state.messages, "connected"] });
+    });
   }
 }

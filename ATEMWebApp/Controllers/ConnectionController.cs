@@ -29,7 +29,7 @@ namespace ATEMWebApp.Controllers
             _logger.LogInformation($"Attempting connection to {(string.IsNullOrEmpty(address) ? "USB-C" : address)}");
             try
             {
-                await Task.Run(() => _atem.Connect(address));
+                await _atem.Connect(address);
                 return Ok();
             }
             catch(ConnectFailureNoResponseException cfnrEx)
