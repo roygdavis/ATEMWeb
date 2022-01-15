@@ -1,4 +1,5 @@
 ﻿using ATEM.Services.Hosts;
+using ATEM.Services.Hosts.MixEffects;
 using ATEM.Services.Hubs;
 using ATEM.Services.Interfaces;
 using BMDSwitcherAPI;
@@ -13,32 +14,36 @@ namespace ATEM.Services.Services
 {
     public class AtemService : IAtemService
     {
-        private readonly IAtemHost _atemHost;
+        private readonly ISwitcherHost _switcherHost;
+        private IMixEffectsHost _mixEffectsHost;
         private readonly IHubContext<ATEMEventsHub> _hub;
         private readonly AtemServicesConfiguration _config;
 
-        public AtemService(IAtemHost atemHost, IHubContext<ATEMEventsHub> hub, AtemServicesConfiguration configuration)
+        public AtemService(ISwitcherHost atemHost, IHubContext<ATEMEventsHub> hub, AtemServicesConfiguration configuration)
         {
-            _atemHost = atemHost;
+            _switcherHost = atemHost;
             _hub = hub;
             _config = configuration;
         }
 
         public async Task Connect(string address)
         {
-            if (_atemHost is null)
+            if (_switcherHost is null)
                 throw new ArgumentNullException("Atem Host is null");
 
-            _atemHost.Connect(address);
+            var switcher = _switcherHost.Connect(address);
             if (_config.EnableEvents)
                 await _hub.Clients.All.SendAsync("connected");
+
+            _mixEffectsHost = new MixEffectsHost(switcher);
+            _mixEffectsHost.DiscoverMixEffects();
         }
 
         public Task<IMixEffectBlock> GetMeBlock(int meId)
         {
-            if (_atemHost.HasMixEffectBlocks())
+            if (_mixEffectsHost.HasMixEffectBlocks)
             {
-                return Task.FromResult(_atemHost.MixEffectsBlocks[meId]);
+                return Task.FromResult(_mixEffectsHost.MixEffectsBlocks[meId]);
             }
             else
                 throw new MixEffectsNullException();
@@ -46,9 +51,9 @@ namespace ATEM.Services.Services
 
         public Task<IEnumerable<IMixEffectBlock>> GetMeBlocks()
         {
-            if (_atemHost.HasMixEffectBlocks())
+            if (_mixEffectsHost.HasMixEffectBlocks)
             {
-                return Task.FromResult(_atemHost.MixEffectsBlocks.AsEnumerable());
+                return Task.FromResult(_mixEffectsHost.MixEffectsBlocks.AsEnumerable());
             }
             else
                 throw new MixEffectsNullException();
@@ -73,10 +78,19 @@ namespace ATEM.Services.Services
 
         private IMixEffectBlock GetMeBlockByIndex(int meBlockIndex)
         {
-            if (!_atemHost.HasMixEffectBlocks())
+            if (!_mixEffectsHost.HasMixEffectBlocks)
                 throw new MixEffectsNullException();
 
-            return _atemHost.MixEffectsBlocks[meBlockIndex];
+            return _mixEffectsHost.MixEffectsBlocks[meBlockIndex];
+        }
+
+        private Task SetKey(int meBlockIndex, int keyerId)
+        {
+            if (!_mixEffectsHost.HasMixEffectBlocks)
+                throw new MixEffectsNullException();
+
+            //_mixEffectsHost.MixEffectsBlocks[meBlockIndex].
+            return Task.CompletedTask;
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using ATEM.Services.Services;
 using ATEM.Services.Hosts;
 using ATEM.Services.Hubs;
+using BMDSwitcherAPI;
 
 namespace ATEMWebApp
 {
@@ -30,8 +31,9 @@ namespace ATEMWebApp
 
             services.AddSignalR();
 
+            services.AddSingleton<CBMDSwitcherDiscovery>();
             services.AddSingleton<IAtemService, AtemService>();
-            services.AddSingleton<IAtemHost, AtemHost>();
+            services.AddSingleton<ISwitcherHost, SwitcherHost>();
             services.AddSingleton<AtemServicesConfiguration>(new AtemServicesConfiguration
             {
                 EnableEvents = true

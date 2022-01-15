@@ -24,5 +24,6 @@ namespace ATEM.Services.Hubs
         //    var meBlock = await _atem.GetMeBlock(0);
         //    return meBlock?.ProgramInput.ToString() ?? string.Empty;
         //}
+
     }
 }
