@@ -26,25 +26,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ATEM.Services\ATEM.Services.csproj" />
+    <ProjectReference Include="..\Atem.Hosts\Atem.Hosts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="BMDLibs\BMDSwitcherAPI.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="BMDLibs\Readme.md">
+    <Reference Include="BMDSwitcherAPI">
+      <HintPath>BMDSwitcherAPI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="BMDSwitcherAPI.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-    <ItemGroup>
-	    <Reference Include="BMDSwitcherAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-		    <SpecificVersion>False</SpecificVersion>
-		    <EmbedInteropTypes>True</EmbedInteropTypes>
-		    <HintPath>BMDLibs\BMDSwitcherAPI.dll</HintPath>
-	    </Reference>
-    </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

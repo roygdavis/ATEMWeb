@@ -194,8 +194,10 @@ namespace ATEM.Services
             m_switcher.CreateIterator(ref meIteratorIID, out IntPtr meIteratorPtr);
 
             // create the iterator
+#pragma warning disable CA1416 // Validate platform compatibility
             IBMDSwitcherMixEffectBlockIterator meIterator = (IBMDSwitcherMixEffectBlockIterator)Marshal.GetObjectForIUnknown(meIteratorPtr);
-            
+#pragma warning restore CA1416 // Validate platform compatibility
+
             // bail if that returned null
             if (meIterator == null)
                 return;

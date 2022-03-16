@@ -59,7 +59,9 @@ namespace ATEM.Services.Hosts.MixEffects
             _switcher.CreateIterator(ref meIteratorIID, out IntPtr meIteratorPtr);
 
             // create the iterator
+#pragma warning disable CA1416 // Validate platform compatibility
             IBMDSwitcherMixEffectBlockIterator meIterator = (IBMDSwitcherMixEffectBlockIterator)Marshal.GetObjectForIUnknown(meIteratorPtr);
+#pragma warning restore CA1416 // Validate platform compatibility
 
             // bail if that returned null
             if (meIterator == null)
@@ -87,6 +89,11 @@ namespace ATEM.Services.Hosts.MixEffects
                 meCount++;
             }
 
+        }
+
+        private void Foo()
+        {
+            //MixEffectsBlocks.First().ProgramInput;
         }
 
         protected virtual void Dispose(bool disposing)

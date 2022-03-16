@@ -1,5 +1,8 @@
-﻿using ATEM.Services;
-using ATEM.Services.Services;
+﻿using Atem.Hosts.Exceptions;
+using Atem.Hosts.Services;
+using Atem.Hosts.Switcher;
+//using ATEM.Services;
+//using ATEM.Services.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,12 +17,12 @@ namespace ATEMWebApp.Controllers
     [ApiController]
     public class ConnectionController : ControllerBase
     {
-        private readonly IAtemService _atem;
+        private readonly ISwitcherService _service;
         private ILogger<ConnectionController> _logger;
 
-        public ConnectionController(IAtemService atem, ILogger<ConnectionController> logger)
+        public ConnectionController(ISwitcherService service, ILogger<ConnectionController> logger)
         {
-            _atem = atem;
+            _service = service;
             _logger = logger;
         }
 
@@ -29,7 +32,7 @@ namespace ATEMWebApp.Controllers
             _logger.LogInformation($"Attempting connection to {(string.IsNullOrEmpty(address) ? "USB-C" : address)}");
             try
             {
-                await _atem.Connect(address);
+                await _service.Connect(address);
                 return Ok();
             }
             catch(ConnectFailureNoResponseException cfnrEx)
@@ -54,7 +57,7 @@ namespace ATEMWebApp.Controllers
         {
             try
             {
-                await Task.Run(() => _atem.Connect("FOO"));
+                await Task.Run(() => _service.Connect("FOO"));
                 return Ok();
             }
             catch

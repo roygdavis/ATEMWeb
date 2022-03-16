@@ -11,18 +11,19 @@ using ATEM.Services.Interfaces;
 using ATEM.Services.Exceptions;
 using ATEM.Services.Hosts.MixEffects;
 using ATEM.Services.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ATEM.Services.Hosts
 {
     [DataContract]
-    public class SwitcherHost : ISwitcherHost, IDisposable, IBMDSwitcherCallback
+    public class SwitcherHost : ISwitcherHost, IDisposable, IBMDSwitcherCallback,ISwitcherHandlers<EventArgs>
     {
         #region private fields
         /// <summary>
         /// Holds the switcher enumerator object
         /// </summary>
         private readonly IBMDSwitcherDiscovery _switcherDiscovery;
-        private readonly ATEMEventsHub _hub;
+        private readonly IHubContext<ATEMEventsHub> _hub;
 
         /// <summary>
         /// Holds the switcher object
@@ -32,89 +33,32 @@ namespace ATEM.Services.Hosts
 
         #region Public properties
 
-        [DataMember]
-        public string AtemIPAddress { get; set; }
-
-        [DataMember]
-        public string SwitcherName { get; set; }
-
-        [DataMember]
-        public bool IsConnected { get; set; }
-
-        [DataMember]
-        public _BMDSwitcherVideoMode VideoMode
-        {
-            get
-            {
-                if (_switcher != null)
-                {
-                    _switcher.GetVideoMode(out _BMDSwitcherVideoMode v);
-                    return v;
-                }
-                throw new NullReferenceException("m_switcher is null");
-            }
-            set
-            {
-                _switcher.SetVideoMode(value);
-            }
-        }
-
-        [DataMember]
-        public string ProductName
-        {
-            get
-            {
-                if (_switcher != null)
-                {
-                    _switcher.GetProductName(out string v);
-                    return v;
-                }
-                throw new NullReferenceException("m_switcher is null");
-            }
-            // empty setter so that this property can be serialised
-            set { }
-
-        }
-
-        [DataMember]
-        public _BMDSwitcher3GSDIOutputLevel SDI3GOutputLevel
-        {
-            get
-            {
-                if (_switcher != null)
-                {
-                    _switcher.Get3GSDIOutputLevel(out _BMDSwitcher3GSDIOutputLevel v);
-                    return v;
-                }
-                throw new NullReferenceException("m_switcher is null");
-            }
-            set
-            {
-                _switcher.Set3GSDIOutputLevel(value);
-            }
-        }
-
-        [DataMember]
-        public _BMDSwitcherPowerStatus PowerStatus
-        {
-            get
-            {
-                if (_switcher != null)
-                {
-                    _switcher.GetPowerStatus(out _BMDSwitcherPowerStatus v);
-                    return v;
-                }
-                throw new NullReferenceException("m_switcher is null");
-            }
-            // empty setter so that this property can be serialised
-            set { }
-        }
+        
+        public _BMDSwitcherDownConversionMethod MethodForDownConvertedSD { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public _BMDSwitcherDownConversionMethod DownConvertedHDVideoMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public _BMDSwitcherVideoMode MultiViewVideoMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool Disconnected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public long TimeCode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool TimeCodeLocked { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public _BMDSwitcherTimeCodeMode TimeCodeMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool SuperSourceCascade { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool AutoVideoMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool AutoVideoModeDetected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public _BMDSwitcherVideoMode VideoMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public _BMDSwitcherPowerStatus PowerStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public _BMDSwitcher3GSDIOutputLevel SDI3GOutputLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string AtemIPAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string ProductName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         #endregion
 
         #region Constructors
-        public SwitcherHost(CBMDSwitcherDiscovery switcherDiscovery, ATEMEventsHub hub)
+        public SwitcherHost(IHubContext<ATEMEventsHub> hub)
         {
-            _switcherDiscovery = switcherDiscovery;
+            _switcherDiscovery = new CBMDSwitcherDiscovery();
+            if (_switcherDiscovery == null)
+            {
+                // TODO: Raise exeception
+            }
             _hub = hub;
             SwitcherDisconnected();		// start with switcher disconnected
         }
@@ -123,50 +67,50 @@ namespace ATEM.Services.Hosts
         public void Notify(_BMDSwitcherEventType eventType, _BMDSwitcherVideoMode coreVideoMode)
         {
             // TODO: Each event should provide the value from the _switcher.GetXXX method
-            switch (eventType)
-            {
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeVideoModeChanged:
-                    _hub.Clients.All.SendCoreAsync("VideoModeChangedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeMethodForDownConvertedSDChanged:
-                    _hub.Clients.All.SendCoreAsync("MethodForDownConvertedSDChangedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeDownConvertedHDVideoModeChanged:
-                    _hub.Clients.All.SendCoreAsync("DownConvertedHDVideoModeChangedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeMultiViewVideoModeChanged:
-                    _hub.Clients.All.SendCoreAsync("MultiViewVideoModeChangedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypePowerStatusChanged:
-                    _hub.Clients.All.SendCoreAsync("PowerStatusChangedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeDisconnected:
-                    _hub.Clients.All.SendCoreAsync("DisconnectedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventType3GSDIOutputLevelChanged:
-                    _hub.Clients.All.SendCoreAsync("SDI3GOutputLevelChangedEvent", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeAutoVideoModeChanged:
-                    _hub.Clients.All.SendCoreAsync("TypeAutoVideoModeChanged", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeAutoVideoModeDetectedChanged:
-                    _hub.Clients.All.SendCoreAsync("AutoVideoModeDetectedChanged", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeSuperSourceCascadeChanged:
-                    _hub.Clients.All.SendCoreAsync("SuperSourceCascadeChanged", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeChanged:
-                    _hub.Clients.All.SendCoreAsync("TimeCodeChanged", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeLockedChanged:
-                    _hub.Clients.All.SendCoreAsync("TimeCodeLockedChanged", null);
-                    break;
-                case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeModeChanged:
-                    _hub.Clients.All.SendCoreAsync("TimeCodeModeChanged", null);
-                    break;
-                default:
-                    break;
-            }
+            //switch (eventType)
+            //{
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeVideoModeChanged:
+            //        VideoModeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeMethodForDownConvertedSDChanged:
+            //        MethodForDownConvertedSDChangedEvent?.Invoke(this, new EventArgs()); ;
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeDownConvertedHDVideoModeChanged:
+            //        DownConvertedHDVideoModeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeMultiViewVideoModeChanged:
+            //        MultiViewVideoModeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypePowerStatusChanged:
+            //        PowerStatusChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeDisconnected:
+            //        DisconnectedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventType3GSDIOutputLevelChanged:
+            //        SDI3GOutputLevelChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeAutoVideoModeChanged:
+            //        TypeAutoVideoModeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeAutoVideoModeDetectedChanged:
+            //        AutoVideoModeDetectedChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeSuperSourceCascadeChanged:
+            //        SuperSourceCascadeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeChanged:
+            //        TimeCodeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeLockedChanged:
+            //        TimeCodeLockedChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    case _BMDSwitcherEventType.bmdSwitcherEventTypeTimeCodeModeChanged:
+            //        TimeCodeModeChangedEvent?.Invoke(this, new EventArgs());
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         #region Switcher connect/disconnect and supporting methods
@@ -186,7 +130,7 @@ namespace ATEM.Services.Hosts
         {
             // Get the switcher name:
             _switcher.GetProductName(out string switcherName);
-            SwitcherName = switcherName;
+            //SwitcherName = switcherName;
         }
 
         public IBMDSwitcher Connect(string address)
@@ -258,7 +202,6 @@ namespace ATEM.Services.Hosts
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-
 
         #endregion
     }

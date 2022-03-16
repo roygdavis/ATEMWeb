@@ -9,7 +9,7 @@ namespace ATEM.Services.Hosts.Keyers
 {
     public class KeyersHost
     {
-        private readonly IBMDSwitcher _atem;
+        //private readonly IBMDSwitcher _atem;
 
         //public KeyersHost(IBm)
     }

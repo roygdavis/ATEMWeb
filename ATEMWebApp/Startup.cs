@@ -7,10 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
-using ATEM.Services.Services;
-using ATEM.Services.Hosts;
-using ATEM.Services.Hubs;
-using BMDSwitcherAPI;
+//using ATEM.Services.Services;
+//using ATEM.Services.Hosts;
+//using ATEM.Services.Hubs;
+//using BMDSwitcherAPI;
+using Atem.Hosts.Switcher;
+using Atem.Hosts.Notifiers;
+using Atem.Hosts.Services;
 
 namespace ATEMWebApp
 {
@@ -29,15 +32,19 @@ namespace ATEMWebApp
 
             services.AddControllersWithViews();
 
-            services.AddSignalR();
+            //services.AddSignalR();
 
-            services.AddSingleton<CBMDSwitcherDiscovery>();
-            services.AddSingleton<IAtemService, AtemService>();
+            //services.AddSingleton<IAtemService, AtemService>();
+            //services.AddSingleton<ISwitcherHost, SwitcherHost>();
+            //services.AddSingleton<AtemServicesConfiguration>(new AtemServicesConfiguration
+            //{
+            //    EnableEvents = true
+            //});
+
+            services.AddLogging();
             services.AddSingleton<ISwitcherHost, SwitcherHost>();
-            services.AddSingleton<AtemServicesConfiguration>(new AtemServicesConfiguration
-            {
-                EnableEvents = true
-            });
+            services.AddSingleton<ISwitcherNotifier, LoggerSwitcherNotifer>();
+            services.AddSingleton<ISwitcherService, SwitcherService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -76,7 +83,7 @@ namespace ATEMWebApp
                 endpoints.MapControllerRoute(
                     name: "api",
                     pattern: "api/{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<ATEMEventsHub>("/events");
+                //endpoints.MapHub<ATEMEventsHub>("/events");
                 endpoints.MapSwagger();
             });
 
