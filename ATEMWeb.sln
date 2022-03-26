@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATEMWrapper", "ATEMBroker\ATEMWrapper.csproj", "{21F12570-1B07-4F80-A78D-EA3CB5C6DD41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATEMWebApp", "ATEMWebApp\ATEMWebApp.csproj", "{2DFD7E23-0103-4A2E-8930-AA9886962172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATEMWeb", "ATEMWeb\ATEMWeb.csproj", "{F3C28FF5-404E-47F4-A1E9-D8832A55C75C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atem.Hosts", "Atem.Hosts\Atem.Hosts.csproj", "{E338331D-5184-4A28-B255-BAB880B033AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{21F12570-1B07-4F80-A78D-EA3CB5C6DD41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21F12570-1B07-4F80-A78D-EA3CB5C6DD41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21F12570-1B07-4F80-A78D-EA3CB5C6DD41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21F12570-1B07-4F80-A78D-EA3CB5C6DD41}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3C28FF5-404E-47F4-A1E9-D8832A55C75C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3C28FF5-404E-47F4-A1E9-D8832A55C75C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3C28FF5-404E-47F4-A1E9-D8832A55C75C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3C28FF5-404E-47F4-A1E9-D8832A55C75C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DFD7E23-0103-4A2E-8930-AA9886962172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DFD7E23-0103-4A2E-8930-AA9886962172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DFD7E23-0103-4A2E-8930-AA9886962172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DFD7E23-0103-4A2E-8930-AA9886962172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E338331D-5184-4A28-B255-BAB880B033AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E338331D-5184-4A28-B255-BAB880B033AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E338331D-5184-4A28-B255-BAB880B033AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E338331D-5184-4A28-B255-BAB880B033AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
