@@ -76,16 +76,127 @@ namespace Atem.Hosts.MixEffects
             });
         }
 
-        public async Task SetPGM(long input)
+        public async Task<long> GetProgramInput()
+        {
+            return await Task.Run(() =>
+            {
+                var input = default(long);
+                _mixEffects?.GetProgramInput(out input);
+                return input;
+            });
+        }
+
+        public async Task SetProgramInput(long input)
         {
             await Task.Run(() => _mixEffects?.SetProgramInput(input));
         }
 
-        public async Task SetPVW(long input)
+        public async Task<long> GetPreviewInput()
+        {
+            return await Task.Run(() =>
+            {
+                var input = default(long);
+                _mixEffects?.GetPreviewInput(out input);
+                return input;
+            });
+        }
+
+        public async Task SetPreviewInput(long input)
         {
             await Task.Run(() => _mixEffects?.SetPreviewInput(input));
         }
 
+        public Task GetPreviewLive()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetPreviewTransition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetPreviewTransition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task PerformAutoTransition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task PerformCut()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetInTransition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetTransitionPosition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTransitionPosition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetTransitionFramesRemaining()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task PerformFadeToBlack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetFadeToBlackRate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetFadeToBlackRate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetFadeToBlackFramesRemaining()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetFadeToBlackFullyBlack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetFadeToBlackFullyBlack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetInFadeToBlack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetFadeToBlackInTransition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetInputAvailabilityMask()
+        {
+            throw new NotImplementedException();
+        }
+
+        #region Disposal
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -120,5 +231,6 @@ namespace Atem.Hosts.MixEffects
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }

@@ -9,7 +9,7 @@ using Atem.Hosts.Services;
 
 namespace ATEMWebApp.Controllers
 {
-    [Route("atem")]
+    [Route("api/atem/mixeffects")]
     [ApiController]
     public class MixEffectsController : ControllerBase
     {

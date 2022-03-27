@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace ATEMWebApp.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/atem/[action]")]
     public class SwitcherController : ControllerBase
     {
         private readonly ISwitcherService _service;
