@@ -13,13 +13,14 @@ namespace Atem.Hosts.MixEffects
 {
     public class MixEffectsHost : IMixEffectsHost
     {
-        private IBMDSwitcherMixEffectBlock _mixEffects;
+        private IBMDSwitcherMixEffectBlock? _mixEffects;
+        private bool disposedValue;
         private readonly ISwitcherNotifier _notifier;
 
         public ISwitcherHost SwitcherHost { get; set; }
         public Dictionary<int, IKeyersHost> KeyersHosts { get; set; }
 
-        public MixEffectsHost(ISwitcherHost switcher, IBMDSwitcherMixEffectBlock mixEffects,ISwitcherNotifier notifer)
+        public MixEffectsHost(ISwitcherHost switcher, IBMDSwitcherMixEffectBlock mixEffects, ISwitcherNotifier notifer)
         {
             SwitcherHost = switcher;
             _mixEffects = mixEffects;
@@ -40,12 +41,17 @@ namespace Atem.Hosts.MixEffects
 
                 // meIteratorPtr holds the pointer to the mix effects iterator object
                 // create the iterator and out to the meIteratorPtr pointer
-                _mixEffects.CreateIterator(ref keyerIteratorIID, out IntPtr keyerIteratorPtr);
+                IntPtr keyerIteratorPtr = IntPtr.Zero;
+                _mixEffects?.CreateIterator(ref keyerIteratorIID, out keyerIteratorPtr);
 
-                // create the iterator
+                IBMDSwitcherKeyIterator? keyerIterator = null;
+                if (keyerIteratorPtr != IntPtr.Zero)
+                {
+                    // create the iterator
 #pragma warning disable CA1416 // Validate platform compatibility
-                IBMDSwitcherKeyIterator keyerIterator = (IBMDSwitcherKeyIterator)Marshal.GetObjectForIUnknown(keyerIteratorPtr);
+                    keyerIterator = (IBMDSwitcherKeyIterator)Marshal.GetObjectForIUnknown(keyerIteratorPtr);
 #pragma warning restore CA1416 // Validate platform compatibility
+                }
 
                 if (keyerIterator != null)
                 {
@@ -57,7 +63,7 @@ namespace Atem.Hosts.MixEffects
                     while (keyer != null)
                     {
                         keyer.AddCallback(_notifier);
-                        var keyerHost = new KeyersHost(this, keyer);
+                        var keyerHost = new KeyersHost(this, keyer, _notifier);
                         KeyersHosts.Add(keyerIndex, keyerHost);
 
                         // Try and get the next block.  A ref of null means there are no more Keyers on this ATEM
@@ -72,12 +78,47 @@ namespace Atem.Hosts.MixEffects
 
         public async Task SetPGM(long input)
         {
-            await Task.Run(() => _mixEffects.SetProgramInput(input));
+            await Task.Run(() => _mixEffects?.SetProgramInput(input));
         }
 
         public async Task SetPVW(long input)
         {
-            await Task.Run(() => _mixEffects.SetPreviewInput(input));
+            await Task.Run(() => _mixEffects?.SetPreviewInput(input));
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                    foreach (var item in KeyersHosts)
+                    {
+                        item.Value.Dispose();
+                    }
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                if (_mixEffects != null && _notifier != null)
+                    _mixEffects?.RemoveCallback(_notifier);
+                _mixEffects = null;
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~MixEffectsHost()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
