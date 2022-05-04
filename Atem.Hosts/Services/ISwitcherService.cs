@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Atem.Hosts.Services
 {
-    public interface ISwitcherService : ISwitcherMethods
+    public interface ISwitcherService : ISwitcherMethods, IMixEffectsMethods
     {
         Task Disconnect();
-        Task SetPGM(int switcherIndex, long input);
-        Task SetPVW(int switcherIndex, long input);
+        Task SetMixEffectsContext(int mixEffectIndex);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BMDSwitcherAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,37 +12,37 @@ namespace Atem.Hosts.Core
         ///
         ///  Get the current program input.
         ///
-        Task GetProgramInput();
+        Task<long> GetProgramInput();
 
         ///
         ///  Set the program input.
         ///
-        Task SetProgramInput();
+        Task SetProgramInput(long value);
 
         ///
         ///  Get the current preview input.
         ///
-        Task GetPreviewInput();
+        Task<long> GetPreviewInput();
 
         ///
         ///  Set the preview input.
         ///
-        Task SetPreviewInput();
+        Task SetPreviewInput(long value);
 
         ///
         ///  Get the current preview-live flag.
         ///
-        Task GetPreviewLive();
+        Task<int> GetPreviewLive();
 
         ///
         ///  Get the current preview-transition flag.
         ///
-        Task GetPreviewTransition();
+        Task<int> GetPreviewTransition();
 
         ///
         ///  Set the preview-transition flag.
         ///
-        Task SetPreviewTransition();
+        Task SetPreviewTransition(int value);
 
         ///
         ///  Initiate an automatic transition.
@@ -56,22 +57,22 @@ namespace Atem.Hosts.Core
         ///
         ///  Get the current in-transition flag.
         ///
-        Task GetInTransition();
+        Task<int> GetInTransition();
 
         ///
         ///  Get the current transition position value.
         ///
-        Task GetTransitionPosition();
+        Task<double> GetTransitionPosition();
 
         ///
         ///  Set the transition position value.
         ///
-        Task SetTransitionPosition();
+        Task SetTransitionPosition(double value);
 
         ///
         ///  Get the number of transition frames remaining.
         ///
-        Task GetTransitionFramesRemaining();
+        Task<uint> GetTransitionFramesRemaining();
 
         ///
         ///  Initiate a fade to black.
@@ -81,42 +82,41 @@ namespace Atem.Hosts.Core
         ///
         ///  Get the current fade to black rate value.
         ///
-        Task GetFadeToBlackRate();
+        Task<uint> GetFadeToBlackRate();
 
         ///
         ///  Set the fade to black rate value.
         ///
-        Task SetFadeToBlackRate();
+        Task SetFadeToBlackRate(uint value);
 
         ///
         ///  Get the current number of fade to black frames remaining.
         ///
-        Task GetFadeToBlackFramesRemaining();
+        Task<uint> GetFadeToBlackFramesRemaining();
 
         ///
         ///  Get the current fade-to-black-fully-black flag.
         ///
-        Task GetFadeToBlackFullyBlack();
+        Task<int> GetFadeToBlackFullyBlack();
 
         ///
         ///  Set the fade-to-black-fully-black flag.
         ///
-        Task SetFadeToBlackFullyBlack();
+        Task SetFadeToBlackFullyBlack(int value);
 
         ///
         ///  Get the current in-fade-to-black flag.
         ///
-        Task GetInFadeToBlack();
+        Task<int> GetInFadeToBlack();
 
         ///
         ///  Get the current fade-to-black-in-transition flag.
         ///
-        Task GetFadeToBlackInTransition();
+        Task<int> GetFadeToBlackInTransition();
 
         ///
         ///  Get the switcher input availability mask.
         ///
-        Task GetInputAvailabilityMask();
-
+        Task<_BMDSwitcherInputAvailability> GetInputAvailabilityMask();
     }
 }

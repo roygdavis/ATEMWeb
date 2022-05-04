@@ -1,4 +1,5 @@
-﻿using Atem.Hosts.Keyers;
+﻿using Atem.Hosts.Core;
+using Atem.Hosts.Keyers;
 using Atem.Hosts.Notifiers;
 using Atem.Hosts.Switcher;
 using BMDSwitcherAPI;
@@ -80,120 +81,175 @@ namespace Atem.Hosts.MixEffects
         {
             return await Task.Run(() =>
             {
-                var input = default(long);
-                _mixEffects?.GetProgramInput(out input);
-                return input;
+                var value = default(long);
+                _mixEffects?.GetProgramInput(out value);
+                return value;
             });
         }
 
-        public async Task SetProgramInput(long input)
+        public async Task SetProgramInput(long value)
         {
-            await Task.Run(() => _mixEffects?.SetProgramInput(input));
+            await Task.Run(() => _mixEffects?.SetProgramInput(value));
         }
 
         public async Task<long> GetPreviewInput()
         {
             return await Task.Run(() =>
             {
-                var input = default(long);
-                _mixEffects?.GetPreviewInput(out input);
-                return input;
+                var value = default(long);
+                _mixEffects?.GetPreviewInput(out value);
+                return value;
             });
         }
 
-        public async Task SetPreviewInput(long input)
+        public async Task SetPreviewInput(long value)
         {
-            await Task.Run(() => _mixEffects?.SetPreviewInput(input));
+            await Task.Run(() => _mixEffects?.SetPreviewInput(value));
         }
 
-        public Task GetPreviewLive()
+        public async Task<int> GetPreviewLive()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+              {
+                  var v = default(int);
+                  _mixEffects?.GetPreviewLive(out v);
+                  return v;
+              });
         }
 
-        public Task GetPreviewTransition()
+        public async Task<int> GetPreviewTransition()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(int);
+                _mixEffects?.GetPreviewTransition(out v);
+                return v;
+            });
         }
 
-        public Task SetPreviewTransition()
+        public async Task SetPreviewTransition(int value)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.SetPreviewTransition(value));
         }
 
-        public Task PerformAutoTransition()
+        public async Task PerformAutoTransition()
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.PerformAutoTransition());
         }
 
-        public Task PerformCut()
+        public async Task PerformCut()
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.PerformCut());
         }
 
-        public Task GetInTransition()
+        public async Task<int> GetInTransition()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(int);
+                _mixEffects?.GetInTransition(out v);
+                return v;
+            });
         }
 
-        public Task GetTransitionPosition()
+        public async Task<double> GetTransitionPosition()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(double);
+                _mixEffects?.GetTransitionPosition(out v);
+                return v;
+            });
         }
 
-        public Task SetTransitionPosition()
+        public async Task SetTransitionPosition(double value)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.SetTransitionPosition(value));
         }
 
-        public Task GetTransitionFramesRemaining()
+        public async Task<uint> GetTransitionFramesRemaining()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(uint);
+                _mixEffects?.GetTransitionFramesRemaining(out v);
+                return v;
+            });
         }
 
-        public Task PerformFadeToBlack()
+        public async Task PerformFadeToBlack()
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.PerformFadeToBlack());
         }
 
-        public Task GetFadeToBlackRate()
+        public async Task<uint> GetFadeToBlackRate()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(uint);
+                _mixEffects?.GetFadeToBlackRate(out v);
+                return v;
+            });
         }
 
-        public Task SetFadeToBlackRate()
+        public async Task SetFadeToBlackRate(uint value)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.SetFadeToBlackRate(value));
         }
 
-        public Task GetFadeToBlackFramesRemaining()
+        public async Task<uint> GetFadeToBlackFramesRemaining()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(uint);
+                _mixEffects?.GetFadeToBlackFramesRemaining(out v);
+                return v;
+            });
         }
 
-        public Task GetFadeToBlackFullyBlack()
+        public async Task<int> GetFadeToBlackFullyBlack()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(int);
+                _mixEffects?.GetFadeToBlackFullyBlack(out v);
+                return v;
+            });
         }
 
-        public Task SetFadeToBlackFullyBlack()
+        public async Task SetFadeToBlackFullyBlack(int value)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _mixEffects?.SetFadeToBlackFullyBlack(value));
         }
 
-        public Task GetInFadeToBlack()
+        public async Task<int> GetInFadeToBlack()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(int);
+                _mixEffects?.GetInFadeToBlack(out v);
+                return v;
+            });
         }
 
-        public Task GetFadeToBlackInTransition()
+        public async Task<int> GetFadeToBlackInTransition()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(int);
+                _mixEffects?.GetFadeToBlackInTransition(out v);
+                return v;
+            });
         }
 
-        public Task GetInputAvailabilityMask()
+        public async Task<_BMDSwitcherInputAvailability> GetInputAvailabilityMask()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var v = default(_BMDSwitcherInputAvailability);
+                _mixEffects?.GetInputAvailabilityMask(out v);
+                return v;
+            });
         }
 
         #region Disposal
