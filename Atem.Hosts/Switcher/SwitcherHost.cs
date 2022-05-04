@@ -1,4 +1,5 @@
-﻿using Atem.Hosts.Exceptions;
+﻿using Atem.Hosts.Core;
+using Atem.Hosts.Exceptions;
 using Atem.Hosts.MixEffects;
 using Atem.Hosts.Notifiers;
 using BMDSwitcherAPI;
@@ -10,6 +11,7 @@ namespace Atem.Hosts.Switcher
     public class SwitcherHost : ISwitcherHost
     {
         private IBMDSwitcher? _switcher;
+        private bool disposedValue;
         private readonly ISwitcherNotifier _notifier;
         private readonly ILogger<ISwitcherHost> _logger;
 
@@ -120,5 +122,240 @@ namespace Atem.Hosts.Switcher
                 });
             }
         }
+
+        public async Task AllowStreamingToResume()
+        {
+            await Task.Run(() => _switcher?.AllowStreamingToResume());
+        }
+
+        public async Task<bool> DoesSupportAutoVideoMode()
+        {
+            int supported = 0;
+            return await Task.Run<int>(() => { _switcher?.DoesSupportAutoVideoMode(out supported); return supported; }) == 1;
+        }
+
+        public async Task<bool> DoesSupportDownConvertedHDVideoMode(_BMDSwitcherVideoMode from, _BMDSwitcherVideoMode to)
+        {
+            int supported = 0;
+            return await Task.Run<int>(() => { _switcher?.DoesSupportDownConvertedHDVideoMode(from, to, out supported); return supported; }) == 1;
+        }
+
+        public async Task<bool> DoesSupportMultiViewVideoMode(_BMDSwitcherVideoMode from, _BMDSwitcherVideoMode to)
+        {
+            int supported = 0;
+            return await Task.Run<int>(() => { _switcher?.DoesSupportMultiViewVideoMode(from, to, out supported); return supported; }) == 1;
+        }
+
+        public async Task<bool> DoesSupportVideoMode(_BMDSwitcherVideoMode mode)
+        {
+            int supported = 0;
+            return await Task.Run<int>(() => { _switcher?.DoesSupportVideoMode(mode, out supported); return supported; }) == 1;
+        }
+
+        public async Task<bool> DoesVideoModeChangeRequireReconfiguration(_BMDSwitcherVideoMode mode)
+        {
+            int supported = 0;
+            return await Task.Run<int>(() => { _switcher?.DoesVideoModeChangeRequireReconfiguration(mode, out supported); return supported; }) == 1;
+        }
+
+        public async Task<_BMDSwitcher3GSDIOutputLevel> Get3GSDIOutputLevel()
+        {
+            return await Task.Run<_BMDSwitcher3GSDIOutputLevel>(() =>
+                {
+                    _BMDSwitcher3GSDIOutputLevel level = default;
+                    _switcher?.Get3GSDIOutputLevel(out level);
+                    return level;
+                });
+        }
+
+        public async Task<string> GetProductName()
+        {
+            return await Task.Run<string>(() =>
+            {
+                var productName = default(string);
+                _switcher?.GetProductName(out productName);
+                return productName ?? string.Empty;
+            });
+        }
+        public async Task<_BMDSwitcherVideoMode> GetVideoMode()
+        {
+            return await Task.Run<_BMDSwitcherVideoMode>(() =>
+            {
+                _BMDSwitcherVideoMode mode = default;
+                _switcher?.GetVideoMode(out mode);
+                return mode;
+            });
+        }
+
+
+        public async Task<_BMDSwitcherDownConversionMethod> GetMethodForDownConvertedSD()
+        {
+            return await Task.Run<_BMDSwitcherDownConversionMethod>(() =>
+            {
+                _BMDSwitcherDownConversionMethod mode = default;
+                _switcher?.GetMethodForDownConvertedSD(out mode);
+                return mode;
+            });
+        }
+        public async Task<_BMDSwitcherVideoMode> GetDownConvertedHDVideoMode(_BMDSwitcherVideoMode from)
+        {
+            return await Task.Run<_BMDSwitcherVideoMode>(() =>
+            {
+                _BMDSwitcherVideoMode mode = default;
+                _switcher?.GetDownConvertedHDVideoMode(from, out mode);
+                return mode;
+            });
+        }
+
+        public async Task<_BMDSwitcherVideoMode> GetMultiViewVideoMode(_BMDSwitcherVideoMode from) 
+        {
+            return await Task.Run<_BMDSwitcherVideoMode>(() =>
+            {
+                _BMDSwitcherVideoMode mode = default;
+                _switcher?.GetMultiViewVideoMode(from, out mode);
+                return mode;
+            });
+        }
+
+        public async Task<_BMDSwitcherPowerStatus> GetPowerStatus()
+        {
+            return await Task.Run<_BMDSwitcherPowerStatus>(() =>
+            {
+                _BMDSwitcherPowerStatus mode = default;
+                _switcher?.GetPowerStatus(out mode);
+                return mode;
+            });
+        }
+
+        public async Task<TimeCode> GetTimeCode() 
+        {
+            return await Task.Run<TimeCode>(() =>
+            {
+                byte hours = default(byte);
+                byte minutes = default(byte);
+                byte seconds = default(byte);
+                byte frames = default(byte);
+                int dropFrame = default(int);
+                _switcher?.GetTimeCode(out  hours, out  minutes, out  seconds, out  frames, out dropFrame);
+                return new TimeCode(hours, minutes, seconds, frames, dropFrame);
+            });
+        }
+
+        public async Task<bool> GetTimeCodeLocked()
+        {
+            return await Task.Run<bool>(() =>
+            {
+                int mode = default;
+                _switcher?.GetTimeCodeLocked(out mode);
+                return mode == 1;
+            });
+        }
+
+        public async Task<_BMDSwitcherTimeCodeMode> GetTimeCodeMode() 
+        {
+            return await Task.Run<_BMDSwitcherTimeCodeMode>(() =>
+            {
+                _BMDSwitcherTimeCodeMode mode = default;
+                _switcher?.GetTimeCodeMode(out mode);
+                return mode;
+            });
+        }
+
+        public async Task<bool> GetAreOutputsConfigurable()
+        {
+            return await Task.Run<bool>(() =>
+            {
+                int mode = default;
+                _switcher?.GetAreOutputsConfigurable(out mode);
+                return mode == 1;
+            });
+        }
+
+        public async Task<bool> GetSuperSourceCascade()
+        {
+            return await Task.Run<bool>(() =>
+            {
+                int mode = default;
+                _switcher?.GetSuperSourceCascade(out mode);
+                return mode == 1;
+            });
+        }
+
+        public async Task<bool> GetAutoVideoMode() 
+        {
+            return await Task.Run<bool>(() =>
+            {
+                int mode = default;
+                _switcher?.GetAutoVideoMode(out mode);
+                return mode == 1;
+            });
+        }
+
+        public async Task<bool> GetAutoVideoModeDetected() 
+        {
+            return await Task.Run<bool>(() =>
+            {
+                int mode = default;
+                _switcher?.GetAutoVideoModeDetected(out mode);
+                return mode == 1;
+            });
+        }
+
+        public async Task SetMethodForDownConvertedSD(_BMDSwitcherDownConversionMethod method) => await Task.Run(() => _switcher?.SetMethodForDownConvertedSD(method));
+
+        public async Task SetDownConvertedHDVideoMode(_BMDSwitcherVideoMode from, _BMDSwitcherVideoMode to) => await Task.Run(() => _switcher?.SetDownConvertedHDVideoMode(from, to));
+
+        public async Task SetMultiViewVideoMode(_BMDSwitcherVideoMode from, _BMDSwitcherVideoMode to) => await Task.Run(() => _switcher?.SetMultiViewVideoMode(from, to));
+
+        public async Task Set3GSDIOutputLevel(_BMDSwitcher3GSDIOutputLevel level) => await Task.Run(() => _switcher?.Set3GSDIOutputLevel(level));
+
+        public async Task SetTimeCode(TimeCode timeCode) => await Task.Run(() => _switcher?.SetTimeCode(timeCode.Hours, timeCode.Minutes, timeCode.Seconds, timeCode.Frames));
+
+        public async Task RequestTimeCode() => await Task.Run(() => _switcher?.RequestTimeCode());
+
+        public async Task SetTimeCodeMode(_BMDSwitcherTimeCodeMode mode) => await Task.Run(() => _switcher?.SetTimeCodeMode(mode));
+
+        public async Task SetSuperSourceCascade(int cascade) => await Task.Run(() => _switcher?.SetSuperSourceCascade(cascade));
+
+        public async Task SetAutoVideoMode(bool enabled) => await Task.Run(() => _switcher?.SetAutoVideoMode(Convert.ToInt32(enabled)));
+
+        public async Task SetVideoMode(_BMDSwitcherVideoMode mode) => await Task.Run(() => _switcher?.SetVideoMode(mode));
+
+        #region Disposal
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                    if (MixEffects is not null)
+                        foreach (var item in MixEffects)
+                        {
+                            item.Value.Dispose();
+                        }
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                if (_notifier != null && _switcher != null)
+                    _switcher.RemoveCallback(_notifier);
+                _switcher = null;
+                disposedValue = true;
+            }
+        }
+
+        ~SwitcherHost()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

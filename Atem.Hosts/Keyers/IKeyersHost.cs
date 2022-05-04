@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atem.Hosts.Keyers
 {
-    public interface IKeyersHost
+    public interface IKeyersHost : IDisposable
     {
         IMixEffectsHost MixEffectsHost { get; set; }
     }

@@ -14,6 +14,9 @@ using Microsoft.OpenApi.Models;
 using Atem.Hosts.Switcher;
 using Atem.Hosts.Notifiers;
 using Atem.Hosts.Services;
+using System.IO;
+using System.Reflection;
+using System;
 
 namespace ATEMWebApp
 {
@@ -54,7 +57,11 @@ namespace ATEMWebApp
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blackmagic Design Switchers Web API (v8.6.4 SDK)", Version = "v1" });
+                
+                // Adds XML documentation from method comments
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
         }
 
@@ -90,7 +97,7 @@ namespace ATEMWebApp
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("v1/swagger.json", "Blackmagic Design Switchers Web API v1 (v8.6.4 SDK)");
             });
 
             app.UseSpa(spa =>

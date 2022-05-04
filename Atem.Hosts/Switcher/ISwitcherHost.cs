@@ -1,4 +1,6 @@
-﻿using Atem.Hosts.MixEffects;
+﻿using Atem.Hosts.Core;
+using Atem.Hosts.MixEffects;
+using BMDSwitcherAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace Atem.Hosts.Switcher
 {
-    public interface ISwitcherHost
+    public interface ISwitcherHost : IDisposable, ISwitcherMethods
     {
         Dictionary<int, IMixEffectsHost> MixEffects { get; set; }
-        
-        Task Connect(string address);
     }
 }
