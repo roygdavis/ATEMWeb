@@ -6,13 +6,9 @@ Also provides a SignalR (WebSockets) endpoint for ATEM events - if another ATEM 
 Limitations: currently only allows selecting the PGM source.
 
 # Quick start
-You'll need to install version 7.5.2 of the Blackmagic Switchers application, found here: https://www.blackmagicdesign.com/support/family/atem-live-production-switchers
-
-Install .Net runtime 4.6.1
-
-Edit web.config with the IP of your ATEM.
-
-Compile & run.
+##You'll need to install version 7.5.2 of the Blackmagic Switchers application, found here: https://www.blackmagicdesign.com/support/family/atem-live-production-switchers
+##Install dotnet v6.0
+##Compile & run with ```dotnet run```
 
 # API endpoints
 http://host:port/index.html will provide simple web page showing the ATEM events (only PGM change events are currently notified)
