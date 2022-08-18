@@ -40,8 +40,8 @@ namespace Atem.Hosts.MixEffects
                 // meIteratorIID holds the COM class GUID of the iterator
                 Guid keyerIteratorIID = typeof(IBMDSwitcherKeyIterator).GUID;
 
-                // meIteratorPtr holds the pointer to the mix effects iterator object
-                // create the iterator and out to the meIteratorPtr pointer
+                // keyerIteratorPtr holds the pointer to the keyer iterator object
+                // create the iterator and out to the keyerIteratorPtr pointer
                 IntPtr keyerIteratorPtr = IntPtr.Zero;
                 _mixEffects?.CreateIterator(ref keyerIteratorIID, out keyerIteratorPtr);
 
@@ -56,11 +56,10 @@ namespace Atem.Hosts.MixEffects
 
                 if (keyerIterator != null)
                 {
-                    // now we can start to iterate over the ME blocks this ATEM has. Usually the basic ATEM's have only one Mix Effect Block.  The 2M/E ATEM's have two.  Some have more.
-                    // try and get the Mix Effect Block from the iterator
+                    // now we can start to iterate over the keyers this ATEM has.
                     keyerIterator.Next(out IBMDSwitcherKey keyer);
 
-                    // if that wasn't null then add to our array of ME Blocks
+                    // if that wasn't null then add to our array of keyers
                     while (keyer != null)
                     {
                         keyer.AddCallback(_notifier);

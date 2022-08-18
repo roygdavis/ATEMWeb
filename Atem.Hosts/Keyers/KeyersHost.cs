@@ -53,5 +53,32 @@ namespace Atem.Hosts.Keyers
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        public void Foo()
+        {
+            _keyer.CanBeDVEKey(out int canDVE);
+            _keyer.DoesSupportAdvancedChroma(out int supportsAdvancedChroma);
+            _keyer.GetCutInputAvailabilityMask(out _BMDSwitcherInputAvailability availabilityMask);
+            _keyer.GetFillInputAvailabilityMask(out _BMDSwitcherInputAvailability availabilityMask);
+            _keyer.GetInputCut(out long input);
+            _keyer.GetInputFill(out long input);
+            _keyer.GetMaskBottom(out double bottom);
+            _keyer.GetMasked(out int maskEnabled);
+            _keyer.GetMaskLeft(out double left);
+            _keyer.GetMaskRight(out double right);
+            _keyer.GetMaskTop(out double top);
+            _keyer.GetOnAir(out int onAir);
+            _keyer.GetTransitionSelectionMask(out _BMDSwitcherTransitionSelection selectionMask);
+            _keyer.ResetMask();
+            _keyer.SetInputCut(long input);
+            _keyer.SetInputFill(long input);
+            _keyer.SetMaskBottom(double bottom);
+            _keyer.SetMasked(int maskEnabled);
+            _keyer.SetMaskLeft(double left);
+            _keyer.SetMaskRight(double right);
+            _keyer.SetMaskTop(double top);
+            _keyer.SetOnAir(int onAir);
+            _keyer.SetType(_BMDSwitcherKeyType type);
+        }
     }
 }
