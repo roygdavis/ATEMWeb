@@ -9,7 +9,7 @@ Limitations: currently only allows selecting the PGM source.
 1. You'll need to install version 7.5.2 of the Blackmagic Switchers application, found here: https://www.blackmagicdesign.com/support/family/atem-live-production-switchers
 2. Install dotnet v6.0
 3. Compile & run with ```dotnet run```
-4. The default url is [https://localhost:5001/](https://localhost:5001/) if you haven't already, you'll need to install the loclahost security certificate from dotnet.
+4. The default url is [https://localhost:5001/](https://localhost:5001/) if you haven't already, you'll need to install the localhost security certificate from dotnet.
 5. Swagger is the best way to interact with the API and is available at [https://localhost:5001/swagger/index.html](https://localhost:5001/swagger/index.html)
 6. Call the ```/api/atem/connect``` method  to connect to your ATEM.  If it's connected via USB then leave the address parameter blank, otherwise supply the IP address of the ATEM.
 7. A proper user interface is in the works, providing a similar feel and functionality offered by the ATEM Switcher application but that's very much a work in progress. 
